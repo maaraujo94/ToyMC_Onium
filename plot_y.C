@@ -5,37 +5,48 @@
 
 void plot_y()
 {
-  int dataPsi = 0;
+  map<string, double> stateMass;
+  stateMass["jpsi"] = 3.097;
+  stateMass["psi2"] = 3.686;
+  stateMass["ups1"] = 9.46;
+  
+  string dataName = "psi2";
+  //string dataName = "ups1";
   // part 0: variables
   const int n_histo = 1;
-  const int n_xi =  dataPsi == 1 ? 7 : 3;
-  double mass = dataPsi == 1 ? 3.097 : 9.46;
+  const int n_xi = dataName == "jpsi" ? 7 : dataName == "psi2" ? 6 : dataName == "ups1" ? 3 : 0;
+  //const int n_xi = dataName == "jpsi" ? 7 : dataName == "psi2" ? 3 : dataName == "ups1" ? 3 : 0;
+  double mass = stateMass[dataName];
   
   double y_max = 5;
   string varName = "";
   double val[n_histo] = {2.};
-  string name[n_histo] = {"MC_res_Ups_lowxi.root"};
-  double dataN = 4.5;
+  string name[n_histo] = {"MC_res.root"};
+  double dataN = 1.9;
 
   double xi_min[n_xi], xi_max[n_xi];
   for(int i = 0; i < n_xi; i++) {
-    if(dataPsi == 1) {
+    if(dataName == "jpsi") {
       xi_min[i] = (i+7.) / mass;
       xi_max[i] = (i+8.) / mass;}
-    else if(dataPsi == 0) {
+    if(dataName == "psi2") {
+      xi_min[i] = (i+8.) / mass;
+      //xi_min[i] = (2.*i+8.) / mass;
+      xi_max[i] = (i+9.) / mass;
+      //xi_max[i] = (2.*i+10.) / mass;
+    }
+    else if(dataName == "ups1") {
       xi_min[i] = (i+10.)/mass;
       xi_max[i] = (i+11.)/mass;
     }
   }
 
   double yax_max[n_histo] = {2};
-  double yax_min[n_histo] = {2e-3};
+  double yax_min[n_histo] = {1e-3};
 
   double yax_max_lin[n_histo] = {0.4};
   double yax_min_lin[n_histo] = {0};
 
-  int base_MC = 1;
-  
   // part 1: get the MC information and fill histograms for each y bin
   
   // making the histograms
@@ -46,9 +57,9 @@ void plot_y()
     for(int j = 0; j < n_xi; j++)
       y_h[i][j] = new TH1F(Form("y_xi%d_var%d", j, i), Form("y_xi%d_var%d", j, i), 100, 0, y_max); 
   }
-
+  
   // opening the files
-
+  
   // name of tree branches
   Double_t xi;
   Double_t w_qg;
@@ -57,25 +68,16 @@ void plot_y()
   Double_t w_sstar;
   Double_t y;
 
-  Double_t w_xi;
-  Double_t w_sig;
-  
   // cycle over all files
   for(int j = 0; j < n_histo; j++)
     {
       TFile *fin = new TFile(Form("%s", name[j].c_str()));
       TTree *tree = (TTree*)fin->Get("qqbar");
 
-      if(base_MC == 1) {
-	tree->SetBranchAddress("w_gg", &w_gg);
-	tree->SetBranchAddress("w_qg", &w_qg);
-	tree->SetBranchAddress("w_cos", &w_cos);
-	tree->SetBranchAddress("w_sstar", &w_sstar);
-      }
-      else if (base_MC == 0) {
-	tree->SetBranchAddress("w_sig", &w_sig);
-	tree->SetBranchAddress("w_xi", &w_xi);
-      }
+      tree->SetBranchAddress("w_gg", &w_gg);
+      tree->SetBranchAddress("w_qg", &w_qg);
+      tree->SetBranchAddress("w_cos", &w_cos);
+      tree->SetBranchAddress("w_sstar", &w_sstar);
       tree->SetBranchAddress("xi", &xi);
       tree->SetBranchAddress("y", &y);
       
@@ -87,10 +89,8 @@ void plot_y()
 	  tree->GetEntry(i);
 	  
 	  for (int k = 0; k < n_xi; k++)
-	    if(xi < xi_max[k] && xi > xi_min[k]) {
-	      if(base_MC == 0) y_h[j][k]->Fill(abs(y), w_xi*w_sig);
-	      else if(base_MC == 1) y_h[j][k]->Fill(abs(y), w_gg*w_cos);
-	    }
+	    if(xi < xi_max[k] && xi > xi_min[k])
+	      y_h[j][k]->Fill(abs(y), w_gg*w_cos);
 	  
 	  if((i+1)%chk == 0) {
 	    cout << (i+1)/chk << "% | " << flush;
@@ -103,10 +103,12 @@ void plot_y()
   TGraphErrors **g = new TGraphErrors*[n_xi];
 
   int n_val[n_xi];
-  for (int i = 0; i < n_xi; i++) 
-    n_val[i] = i == 6 ? 4 : i == 3 ? 6 : 5;
+  for (int i = 0; i < n_xi; i++)
+    if(dataName == "jpsi") n_val[i] = i == 6 ? 4 : i == 3 ? 6 : 5;
+    else if (dataName == "ups1") n_val[i] =5;
+    else if (dataName == "psi2") n_val[i] =5;
     
-  if (dataPsi == 1)
+  if (dataName == "jpsi")
     {
       ifstream file;
       string data;
@@ -120,7 +122,7 @@ void plot_y()
 			    "data/LHCb_jpsi_7_cs_y2.txt",
 			    "data/LHCb_jpsi_7_cs_y3.txt",
 			    "data/LHCb_jpsi_7_cs_y4.txt",
-			"data/LHCb_jpsi_7_cs_y5.txt"};
+			    "data/LHCb_jpsi_7_cs_y5.txt"};
       for(int k = 0; k < 6; k++) {
 	file.open(filelist[k].c_str());
 	
@@ -140,9 +142,10 @@ void plot_y()
 	}
 	file.close();
 	
+	
 	// normalize to first point
 	double aux;
-	if(k < 1) aux = sig[0][0]*dataN;
+	if(k < 1) aux = sig[0][0]/dataN;
 	for(int i = 0; i < n_pts[k]; i++) {
 	  sig[k][i] /= aux;
 	  dsig[k][i] /= aux;
@@ -163,22 +166,22 @@ void plot_y()
 	g[i] = new TGraphErrors(n_val[i], y_av, sig_av, dy_av, dsig_av); 
       }
     }
-  
-  else if (dataPsi == 0)
+
+  else if (dataName == "ups1")
     {
       ifstream file;
       string data;
       int n_pts[6] = {22, 24, 25, 24, 21, 15};
       double pt_lo[6][n_pts[2]], pt_hi[6][n_pts[2]], y_v[6][n_pts[2]], dy[6][n_pts[2]], sig[6][n_pts[2]], dsig[6][n_pts[2]];
       double nums[12];
-       
+      
       string filelist[6] = {"data/CMS_ups1_7_cs_y1.txt",
 			    "data/LHCb_ups1_7_cs_y1.txt",
 			    "data/LHCb_ups1_7_cs_y2.txt",
 			    "data/LHCb_ups1_7_cs_y3.txt",
 			    "data/LHCb_ups1_7_cs_y4.txt",
 			    "data/LHCb_ups1_7_cs_y5.txt"};
-
+      
       for(int k = 0; k < 6; k++) {
 	file.open(filelist[k].c_str());
 	
@@ -200,8 +203,7 @@ void plot_y()
 	
 	// normalize to first point
 	double aux;
-	if(k < 1) aux = sig[0][0]*dataN;
-	cout << k << " " << aux << endl;;
+	if(k < 1) aux = sig[0][0]/dataN;
 	for(int i = 0; i < n_pts[k]; i++) {
 	  sig[k][i] /= aux;
 	  dsig[k][i] /= aux;
@@ -216,14 +218,75 @@ void plot_y()
 	  dy_av[j] = dy[j+1][0];
 	  
 	  sig_av[j] = sig[j+1][i+10];
-	  cout << i << " " << j << " " << sig[j+1][i+10] << endl;
 	  dsig_av[j] = dsig[j+1][i+10];
-
+	  
 	}
 	g[i] = new TGraphErrors(n_val[i], y_av, sig_av, dy_av, dsig_av);
       }
     }
-    
+  
+  else if (dataName == "psi2")
+    {
+  
+      ifstream file;
+      string data;
+      int n_pts[5] = {11, 11, 11, 11, 11};
+      double pt_lo[5][n_pts[2]], pt_hi[5][n_pts[2]], y_v[5][n_pts[2]], dy[5][n_pts[2]], sig[5][n_pts[2]], dsig[5][n_pts[2]];
+      double nums[12];
+       
+      string filelist[5] = {"data/LHCb_psi2_7_cs_y1.txt",
+			    "data/LHCb_psi2_7_cs_y2.txt",
+			    "data/LHCb_psi2_7_cs_y3.txt",
+			    "data/LHCb_psi2_7_cs_y4.txt",
+			    "data/LHCb_psi2_7_cs_y5.txt"};
+
+      for(int k = 0; k < 5; k++) {
+	file.open(filelist[k].c_str());
+	
+	for(int j = 0; j < n_pts[k]; j++) {
+	  for(int i = 0; i < 12; i++)
+	    file >> nums[i];
+	  
+	  y_v[k][j] = 0.5 * (nums[1] + nums[0]);
+	  dy[k][j] = 0.5 * (nums[1] - nums[0]);
+	  
+	  pt_lo[k][j] = nums[3];
+	  pt_hi[k][j] = nums[4];
+	  
+	  double signorm = 1.;
+	  sig[k][j] = nums[5]*mass/(signorm);
+	  dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+	}
+	file.close();
+	
+	// normalize to first point
+	double aux;
+	if(k < 1) aux = sig[0][0]/dataN;
+	for(int i = 0; i < n_pts[k]; i++) {
+	  sig[k][i] /= aux;
+	  dsig[k][i] /= aux;
+	}
+	
+      }
+
+      
+      for(int i = 0; i < n_xi; i++) {
+	double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+	for(int j = 0; j < n_val[i]; j++) {
+	  y_av[j] = y_v[j][0];
+	  dy_av[j] = dy[j][0];
+	  
+	  sig_av[j] = sig[j][i+5];
+	  //sig_av[j] = 0.5*(sig[j][2*i+5]+sig[j][2*i+6]);
+	  dsig_av[j] = dsig[j][i+5];
+	  //dsig_av[j] = 0.5*(dsig[j][2*i+5]+dsig[j][2*i+6]);
+	  
+	}
+	g[i] = new TGraphErrors(n_val[i], y_av, sig_av, dy_av, dsig_av);
+      }
+      
+    }
+  
   // part 3: draw the results (1 canvas for each beta)
   
   TCanvas *can = new TCanvas("", "", 700, 700);
@@ -232,7 +295,6 @@ void plot_y()
   // scaling the histos to the CMS integral
   for(int i = 0; i < n_histo; i++) {
     double n = y_h[i][0]->Integral("width");
-    cout << n << endl;
     for(int j = 0; j < n_xi; j++) 
       y_h[i][j]->Scale(1./n);
   }
@@ -271,12 +333,11 @@ void plot_y()
     }
     
     leg->Draw();
-
-    cout << "leg draw" << endl;
-    //if(n_histo < 2)
+    
+    if(n_histo < 2)
       can->SaveAs("plots/y_dist_log.pdf");
-    //else
-    //  can->SaveAs(Form("plots/%s_%d_log.pdf", varName.c_str(), i_b));
+    else
+      can->SaveAs(Form("plots/%s_%d_log.pdf", varName.c_str(), i_b));
 
     can->Clear();
 
@@ -295,7 +356,7 @@ void plot_y()
       y_h[i_b][0]->SetTitle(Form("%.s = %.1f", varName.c_str(), val[i_b]));
     else
       y_h[i_b][0]->SetTitle("");
-y_h[i_b][0]->GetYaxis()->SetTitleOffset(1.3);
+    y_h[i_b][0]->GetYaxis()->SetTitleOffset(1.3);
     y_h[i_b][0]->GetYaxis()->SetRangeUser(yax_min_lin[i_b], yax_max_lin[i_b]);
     y_h[i_b][0]->Draw("hist");
 
@@ -307,7 +368,7 @@ y_h[i_b][0]->GetYaxis()->SetTitleOffset(1.3);
       y_h[i_b][j_xi]->SetLineColor(j_xi+1);
       y_h[i_b][j_xi]->Draw("hist same");
       leg->AddEntry(y_h[i_b][j_xi], Form("%.0f < p_{T} < %.0f", xi_min[j_xi]*mass, xi_max[j_xi]*mass), "l");
-     }
+    }
 
     for(int j_xi = 0; j_xi < n_xi; j_xi++) {
       g[j_xi]->SetMarkerStyle(20);
