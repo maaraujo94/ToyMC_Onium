@@ -19,8 +19,8 @@ using namespace std;
 PDF *pdf_ct = mkPDF("CT14nnlo", 0);
 
 // how many events to generate. The events will be weighted by the partonic cross section, so many of them will count very little.
-//const int n_events = 1e7;
-const int n_events = 1e5;
+const int n_events = 1e7;
+//const int n_events = 1e5;
 
 const int n_s_val = 2;
 double sqrts[n_s_val] = {7000, 13000};  // write here collision energy in GeV
