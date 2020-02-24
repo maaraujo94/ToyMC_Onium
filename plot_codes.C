@@ -4,7 +4,7 @@
 */
 
 // xi codes
-void xi_jpsi_7(TGraphAsymmErrors **g, double norm)
+void xi_jpsi_7(TGraphAsymmErrors **g, TH1F **h, double norm)
 {
   double mass = 3.097;
 
@@ -12,7 +12,7 @@ void xi_jpsi_7(TGraphAsymmErrors **g, double norm)
   string data;
   int n_pts;
   double nums[12];
-  const int n_y = 6; 
+  const int n_y = 6;
 
   string filelist[n_y] = {"data/CMS_jpsi_7_cs_y1.txt",
 			  "data/LHCb_jpsi_7_cs_y1.txt",
@@ -25,7 +25,7 @@ void xi_jpsi_7(TGraphAsymmErrors **g, double norm)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
       
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
       
     file.clear();
     file.seekg(0);
@@ -36,7 +36,10 @@ void xi_jpsi_7(TGraphAsymmErrors **g, double norm)
       pt[j] = nums[2]/mass;
       dpt_lo[j] = (nums[2]-nums[3])/mass;
       dpt_hi[j] = (nums[4]-nums[2])/mass;
-	
+
+      bins[j] = nums[3]/mass;
+      if(j == n_pts-1) bins[j+1] = nums[4]/mass;
+
       double signorm = k < 1 ? 5.961e-2*1e3 : 1;
       sig[j] = nums[5]*mass/(signorm);
       dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
@@ -44,22 +47,21 @@ void xi_jpsi_7(TGraphAsymmErrors **g, double norm)
     file.close();
     
     // normalize to first point
-    double aux;
-    if(k < 1) aux = sig[0]/norm;
+    double aux = 1./norm;
+    //if(k < 1) aux = sig[0]/norm;
     for(int i = 0; i < n_pts; i++) {
       sig[i] /= aux;
       dsig[i] /= aux;
     }
       
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
-    
+
+    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
   
 }
 
-// here there will be a TGraph that is just empty:
-// check how to do this!
-void xi_psi2_7(TGraphAsymmErrors **g, double norm)
+void xi_psi2_7(TGraphAsymmErrors **g, TH1F **h, double norm)
 {
   double mass = 3.686;
   
@@ -67,9 +69,12 @@ void xi_psi2_7(TGraphAsymmErrors **g, double norm)
   string data;
   int n_pts;
   double nums[12];
-  const int n_y = 6;
+  const int n_y = 9;
 
-  string filelist[n_y] = {"",
+  string filelist[n_y] = {"data/CMS_psi2_7_cs_y1.txt",
+			  "data/CMS_psi2_7_cs_y2.txt",
+			  "data/CMS_psi2_7_cs_y3.txt",
+			  "data/CMS_psi2_7_cs_y4.txt",
 			  "data/LHCb_psi2_7_cs_y1.txt",
 			  "data/LHCb_psi2_7_cs_y2.txt",
 			  "data/LHCb_psi2_7_cs_y3.txt",
@@ -80,7 +85,7 @@ void xi_psi2_7(TGraphAsymmErrors **g, double norm)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
       
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -91,6 +96,66 @@ void xi_psi2_7(TGraphAsymmErrors **g, double norm)
       pt[j] = nums[2]/mass;
       dpt_lo[j] = (nums[2]-nums[3])/mass;
       dpt_hi[j] = (nums[4]-nums[2])/mass;
+
+      bins[j] = nums[3]/mass;
+      if(j == n_pts-1) bins[j+1] = nums[4]/mass;
+      
+      double signorm = k < 4 ? 8e-3 * 1e3 : 1.;
+      sig[j] = nums[5]*mass/(signorm);
+      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+    }
+    file.close();
+    
+    // normalize to first point
+    double aux = 1./norm;;
+    //if(k == 1) aux = sig[0]/norm;
+    for(int i = 0; i < n_pts; i++) {
+      sig[i] /= aux;
+      dsig[i] /= aux;
+    }
+
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+
+    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+  }
+  
+}
+
+void xi_psi2_13(TGraphAsymmErrors **g, TH1F **h, double norm)
+{
+  double mass = 3.686;
+  
+  ifstream file;
+  string data;
+  int n_pts;
+  double nums[12];
+  const int n_y = 6;
+
+  string filelist[n_y] = {"",
+			  "data/LHCb_psi2_13_cs_y1.txt",
+			  "data/LHCb_psi2_13_cs_y2.txt",
+			  "data/LHCb_psi2_13_cs_y3.txt",
+			  "data/LHCb_psi2_13_cs_y4.txt",
+			  "data/LHCb_psi2_13_cs_y5.txt"};
+  for(int k = 0; k < n_y; k++) {
+    file.open(filelist[k].c_str());
+    n_pts = 0;
+    while(getline(file,data)) n_pts+=1;
+      
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    
+    file.clear();
+    file.seekg(0);
+    for(int j = 0; j < n_pts; j++) {
+      for(int i = 0; i < 12; i++)
+	file >> nums[i];
+      
+      pt[j] = nums[2]/mass;
+      dpt_lo[j] = (nums[2]-nums[3])/mass;
+      dpt_hi[j] = (nums[4]-nums[2])/mass;
+
+      bins[j] = nums[3]/mass;
+      if(j == n_pts-1) bins[j+1] = nums[4]/mass;
       
       double signorm = 1.;
       sig[j] = nums[5]*mass/(signorm);
@@ -99,19 +164,22 @@ void xi_psi2_7(TGraphAsymmErrors **g, double norm)
     file.close();
     
     // normalize to first point
-    double aux;
-    if(k == 1) aux = sig[0]/norm;
+    double aux = 1./norm;
+    //if(k == 1) aux = sig[0]/norm;
     for(int i = 0; i < n_pts; i++) {
       sig[i] /= aux;
       dsig[i] /= aux;
     }
 
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+
+    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+
   }
   
 }
 
-void xi_ups1_7(TGraphAsymmErrors **g, double norm)
+void xi_ups1_7(TGraphAsymmErrors **g, TH1F **h, double norm)
 {
   double mass = 9.46;
   
@@ -121,7 +189,6 @@ void xi_ups1_7(TGraphAsymmErrors **g, double norm)
   double nums[12];
   const int n_y = 6; 
 
-  
   string filelist[n_y] = {"data/CMS_ups1_7_cs_y1.txt",
 			  "data/LHCb_ups1_7_cs_y1.txt",
 			  "data/LHCb_ups1_7_cs_y2.txt",
@@ -134,7 +201,7 @@ void xi_ups1_7(TGraphAsymmErrors **g, double norm)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
     
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -145,6 +212,9 @@ void xi_ups1_7(TGraphAsymmErrors **g, double norm)
       pt[j] = nums[2]/mass;
       dpt_lo[j] = (nums[2]-nums[3])/mass;
       dpt_hi[j] = (nums[4]-nums[2])/mass;
+
+      bins[j] = nums[3]/mass;
+      if(j == n_pts-1) bins[j+1] = nums[4]/mass;
       
       double signorm = k < 1 ? 2.4*2.48e-2*1e6 : 2.48e-2*1e3;
       sig[j] = nums[5]*mass/(signorm);
@@ -153,15 +223,16 @@ void xi_ups1_7(TGraphAsymmErrors **g, double norm)
     file.close();
     
     // normalize to first point
-    double aux;
-    if(k < 1) aux = sig[0]/norm;
+    double aux = 1./norm;
+    //if(k < 1) aux = sig[0]/norm;
     for(int i = 0; i < n_pts; i++) {
       sig[i] /= aux;
       dsig[i] /= aux;
     }
     
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
-    
+
+    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
   
 }
@@ -207,8 +278,8 @@ void y_jpsi_7(TGraphAsymmErrors **g, double norm, int y_n)
     file.close();
 	
     // normalize to first point
-    double aux;
-    if(k < 1) aux = sig[0][0]/norm;
+    double aux = 1./norm;
+    //if(k < 1) aux = sig[0][0]/norm;
     for(int i = 0; i < n_pts[k]; i++) {
       sig[k][i] /= aux;
       dsig[k][i] /= aux;
@@ -235,6 +306,74 @@ void y_jpsi_7(TGraphAsymmErrors **g, double norm, int y_n)
 void y_psi2_7(TGraphAsymmErrors **g, double norm, int y_n)
 {
   double mass = 3.686;
+  const int nfiles = 9;
+  
+  int n_val[y_n];
+  for (int i = 0; i < y_n; i++)
+    n_val[i] = i < 2 ? 5 : 9;
+
+  ifstream file;
+  string data;
+  int n_pts[nfiles] = {18, 18, 18, 18, 11, 11, 11, 11, 11};
+  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig[nfiles][n_pts[2]];
+  double nums[12];
+  
+  string filelist[nfiles] = {"data/CMS_psi2_7_cs_y1.txt",
+			"data/CMS_psi2_7_cs_y2.txt",
+			"data/CMS_psi2_7_cs_y3.txt",
+			"data/CMS_psi2_7_cs_y4.txt",
+			"data/LHCb_psi2_7_cs_y1.txt",
+			"data/LHCb_psi2_7_cs_y2.txt",
+			"data/LHCb_psi2_7_cs_y3.txt",
+			"data/LHCb_psi2_7_cs_y4.txt",
+			"data/LHCb_psi2_7_cs_y5.txt"};
+  
+  for(int k = 0; k < nfiles; k++) {
+    file.open(filelist[k].c_str());
+    
+    for(int j = 0; j < n_pts[k]; j++) {
+      for(int i = 0; i < 12; i++)
+	file >> nums[i];
+      
+      y_v[k][j] = 0.5 * (nums[1] + nums[0]);
+      dy[k][j] = 0.5 * (nums[1] - nums[0]);
+      
+      pt_lo[k][j] = nums[3];
+      pt_hi[k][j] = nums[4];
+      
+      double signorm = k < 4 ? 8e-3 * 1e3 : 1.;
+      sig[k][j] = nums[5]*mass/(signorm);
+      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+    }
+    file.close();
+    
+    // normalize to first point
+    double aux = 1./norm;
+    //if(k < 1) aux = sig[0][0]/norm;
+    for(int i = 0; i < n_pts[k]; i++) {
+      sig[k][i] /= aux;
+      dsig[k][i] /= aux;
+    }
+    
+  }
+  
+  for(int i = 0; i < y_n; i++) { // i reps pt bin
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    for(int j = 0; j < n_val[i]; j++) { // j reps y bin
+      y_av[j] = i < 2 ? y_v[j+4][0] : y_v[j][0];
+      dy_av[j] = i < 2 ? dy[j+4][0] : dy[j][0];
+      
+      sig_av[j] = i < 2 ? sig[j+4][i+5] : sig[j][j < 4 ? i-2 : i+5];
+      dsig_av[j] = i < 2 ? dsig[j+4][i+5] : dsig[j][j < 4 ? i-2 : i+5];
+
+    }
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+  }
+}
+
+void y_psi2_13(TGraphAsymmErrors **g, double norm, int y_n)
+{
+  double mass = 3.686;
   
   int n_val[y_n];
   for (int i = 0; i < y_n; i++)
@@ -242,15 +381,15 @@ void y_psi2_7(TGraphAsymmErrors **g, double norm, int y_n)
 
   ifstream file;
   string data;
-  int n_pts[5] = {11, 11, 11, 11, 11};
-  double pt_lo[5][n_pts[2]], pt_hi[5][n_pts[2]], y_v[5][n_pts[2]], dy[5][n_pts[2]], sig[5][n_pts[2]], dsig[5][n_pts[2]];
+  int n_pts[5] = {17, 17, 16, 15, 14};
+  double pt_lo[5][n_pts[1]], pt_hi[5][n_pts[1]], y_v[5][n_pts[1]], dy[5][n_pts[1]], sig[5][n_pts[1]], dsig[5][n_pts[1]];
   double nums[12];
   
-  string filelist[5] = {"data/LHCb_psi2_7_cs_y1.txt",
-			"data/LHCb_psi2_7_cs_y2.txt",
-			"data/LHCb_psi2_7_cs_y3.txt",
-			"data/LHCb_psi2_7_cs_y4.txt",
-			"data/LHCb_psi2_7_cs_y5.txt"};
+  string filelist[5] = {"data/LHCb_psi2_13_cs_y1.txt",
+			"data/LHCb_psi2_13_cs_y2.txt",
+			"data/LHCb_psi2_13_cs_y3.txt",
+			"data/LHCb_psi2_13_cs_y4.txt",
+			"data/LHCb_psi2_13_cs_y5.txt"};
   
   for(int k = 0; k < 5; k++) {
     file.open(filelist[k].c_str());
@@ -272,8 +411,8 @@ void y_psi2_7(TGraphAsymmErrors **g, double norm, int y_n)
     file.close();
     
     // normalize to first point
-    double aux;
-    if(k < 1) aux = sig[0][0]/norm;
+    double aux = 1./norm;
+    //if(k < 1) aux = sig[0][0]/norm;
     for(int i = 0; i < n_pts[k]; i++) {
       sig[k][i] /= aux;
       dsig[k][i] /= aux;
@@ -281,14 +420,14 @@ void y_psi2_7(TGraphAsymmErrors **g, double norm, int y_n)
     
   }
   
-  for(int i = 0; i < y_n; i++) {
+  for(int i = 0; i < y_n; i++) { // i reps pt bin
     double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
-    for(int j = 0; j < n_val[i]; j++) {
+    for(int j = 0; j < n_val[i]; j++) { // j reps y bin
       y_av[j] = y_v[j][0];
       dy_av[j] = dy[j][0];
       
-      sig_av[j] = sig[j][i+5];
-      dsig_av[j] = dsig[j][i+5];
+      sig_av[j] = sig[j][i+6];
+      dsig_av[j] = dsig[j][i+6];
       
     }
     g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
@@ -336,8 +475,8 @@ void y_ups1_7(TGraphAsymmErrors **g, double norm, int y_n)
     file.close();
     
     // normalize to first point
-    double aux;
-    if(k < 1) aux = sig[0][0]/norm;
+    double aux = 1./norm; 
+    //if(k < 1) aux = sig[0][0]/norm;
     for(int i = 0; i < n_pts[k]; i++) {
       sig[k][i] /= aux;
       dsig[k][i] /= aux;

@@ -27,19 +27,20 @@ void plot_simple()
   // choose state we're plotting
   string dataName = "psi2";   // "jpsi", "psi2", "ups1"
   // choose sqrt(s) we're plotting
-  string sqsName = "7";   // "7", "13"
+  string sqsName = "13";   // "7", "13"
 
   string fName = "MC_res.root";   // file to open
-  double xi_normFactor = 2.5;   // overall normalization btw data, MC
   double xi_bin_width = 0.1;   // constant for easier normalization
 
   double y_plot_min = 0, y_plot_max = 5;
-  double y_normFactor = 1.9;
   
   /////////////////////////////////////////
   // part 2 : vars defined by above or constant
+  double xi_normFactor = 2.5;   // overall normalization btw data, MC
+  double y_normFactor = 1.9;
+
   const int xi_n = 6;
-  const int y_n = sqsName == "7" ? dataName == "jpsi" ? 7 : dataName == "psi2" ? 6 : dataName == "ups1" ? 3 : 0 : 0;
+  const int y_n = sqsName == "7" ? dataName == "jpsi" ? 7 : dataName == "psi2" ? 6 : dataName == "ups1" ? 3 : 0 : sqsName == "13" ? dataName == "psi2" ? 6 : 0 : 0;
   TGraphAsymmErrors **xi_g = new TGraphAsymmErrors*[xi_n];
   TGraphAsymmErrors **y_g = new TGraphAsymmErrors*[y_n];
 
@@ -85,6 +86,9 @@ void plot_simple()
     }
   if (dataName == "psi2" && sqsName == "7")
     {
+      xi_normFactor = 2.5;
+      y_normFactor = 1.9;
+
       // xi plots
       for(int i = 0; i < xi_n; i++) {
 	xi_min[i] = 0;
@@ -107,6 +111,35 @@ void plot_simple()
       y_yax_max_log = 2;
 
       y_psi2_7(y_g, y_normFactor, y_n);
+
+    }
+  if (dataName == "psi2" && sqsName == "13")
+    {
+      xi_normFactor = 4.;
+      y_normFactor = 2.75;
+
+      // xi plots
+      for(int i = 0; i < xi_n; i++) {
+	xi_min[i] = 0;
+	xi_max[i] = 6;
+	xi_yax_min[i] = 1e-3;
+	xi_yax_max[i] = 1e2;
+      }
+      
+      xi_psi2_13(xi_g, xi_normFactor);
+      
+      // y plots
+      for(int i = 0; i < y_n; i++) {
+	y_xi_min[i] = (i+8.) / mass;
+	y_xi_max[i] = (i+9.) / mass;
+      }
+
+      y_yax_min_lin = 0;
+      y_yax_max_lin = 0.4;
+      y_yax_min_log = 1e-3;
+      y_yax_max_log = 2;
+
+      y_psi2_13(y_g, y_normFactor, y_n);
 
     }
   if (dataName == "ups1" && sqsName == "7")
@@ -146,7 +179,7 @@ void plot_simple()
   
   TH1F **xi_h = new TH1F*[xi_n]; // histograms
   for(int j = 0; j < xi_n; j++)
-    xi_h[j] = new TH1F(Form("xi_y%d", j), Form("%s %.1f < |y| < %.1f", j < 1 ? "CMS" : "LHCb", y_min[j], y_max[j]), xi_n_bins[j], xi_min[j], xi_max[j]); 
+    xi_h[j] = new TH1F(Form("xi_y%d", j), Form("%s %.1f < %s < %.1f", j < 1 ? "CMS" : "LHCb", y_min[j], j < 1 ? "|y|" : "y", y_max[j]), xi_n_bins[j], xi_min[j], xi_max[j]); 
   TH1F **y_h = new TH1F*[y_n];
   for(int j = 0; j < y_n; j++)
     y_h[j] = new TH1F(Form("y_xi%d", j), Form("y_xi%d", j), 50, y_plot_min, y_plot_max); 
@@ -172,13 +205,19 @@ void plot_simple()
     {
       tree->GetEntry(i);
 
-      for (int k = 0; k < xi_n; k++)
-	if(abs(y) < y_max[k] && abs(y) > y_min[k] && xi > 2 && xi < 50)
+      // CMS xi part (symmetric in y)
+      if(abs(y) < y_max[0] && abs(y) > y_min[0] && xi > 2 && xi < 50)
+	xi_h[0]->Fill(xi, w_gg * w_cos);
+
+      // LHCb xi part (only forward (pos) y)
+      for (int k = 1; k < xi_n; k++)
+	if(y < y_max[k] && y > y_min[k] && xi > 2 && xi < 50)
 	  xi_h[k]->Fill(xi, w_gg * w_cos);
 
+      // y part (always pos value)
       for (int k = 0; k < y_n; k++)
 	if(xi < y_xi_max[k] && xi > y_xi_min[k])
-	  y_h[k]->Fill(abs(y), w_gg * w_cos);
+	  y_h[k]->Fill(y, w_gg * w_cos);
       
       if((i+1)%chk == 0) {
 	cout << (i+1)/chk << "% | " << flush;
@@ -197,8 +236,9 @@ void plot_simple()
   // scaling the histos to the first integral
   double n = xi_h[0]->Integral("width");
   for(int j = 0; j < xi_n; j++) {
-    xi_h[j]->Scale(1./(2.*n*(y_max[j]-y_min[j])));
+    xi_h[j]->Scale(1./(n*(y_max[j]-y_min[j])));
   }
+  xi_h[0]->Scale(1./2.); // extra scaling to acct for absolute value of y
   
   // cycle for all the y bins (histo + graph)
   for(int j_y = 0; j_y < xi_n; j_y++) {    
