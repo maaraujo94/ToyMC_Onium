@@ -28,7 +28,7 @@ void xi_jpsi_7(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
       
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
       
     file.clear();
     file.seekg(0);
@@ -45,11 +45,12 @@ void xi_jpsi_7(TGraphAsymmErrors **g, TH1F **h)
 
       double signorm = k < 4 ? 5.961e-2*1e3 : 1;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
           
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -79,9 +80,9 @@ void xi_psi2_7(TGraphAsymmErrors **g, TH1F **h)
     file.open(filelist[k].c_str());
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
-      
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
     
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
+
     file.clear();
     file.seekg(0);
     for(int j = 0; j < n_pts; j++) {
@@ -97,11 +98,12 @@ void xi_psi2_7(TGraphAsymmErrors **g, TH1F **h)
       
       double signorm = k < 4 ? 8e-3 * 1e3 : 1.;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
-    
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+          
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -131,7 +133,7 @@ void xi_ups1_7(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
     
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -148,11 +150,12 @@ void xi_ups1_7(TGraphAsymmErrors **g, TH1F **h)
       
       double signorm = k < 2 ? 1.2*2.48e-2*1e6 : 2.48e-2*1e3;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
-    
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+          
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -182,7 +185,7 @@ void xi_ups2_7(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
     
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -199,11 +202,12 @@ void xi_ups2_7(TGraphAsymmErrors **g, TH1F **h)
       
       double signorm = k < 2 ? 1.2*1.93e-2*1e6 : 1.93e-2*1e3;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
-    
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+          
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -233,7 +237,7 @@ void xi_ups3_7(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
     
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -250,11 +254,12 @@ void xi_ups3_7(TGraphAsymmErrors **g, TH1F **h)
       
       double signorm = k < 2 ? 1.2*2.18e-2*1e6 : 2.18e-2*1e3;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
-    
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+          
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -287,7 +292,7 @@ void xi_jpsi_13(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
       
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
       
     file.clear();
     file.seekg(0);
@@ -304,11 +309,12 @@ void xi_jpsi_13(TGraphAsymmErrors **g, TH1F **h)
 
       double signorm = k < 4 ? 5.961e-2*1e3 : 1.;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
           
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -341,7 +347,7 @@ void xi_psi2_13(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
       
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -358,12 +364,13 @@ void xi_psi2_13(TGraphAsymmErrors **g, TH1F **h)
       
       double signorm = k < 4 ? 8e-3 * 1e3 : 1.;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
+          
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
     
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
-
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
 
   }
@@ -393,7 +400,7 @@ void xi_ups1_13(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
     
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -410,11 +417,12 @@ void xi_ups1_13(TGraphAsymmErrors **g, TH1F **h)
       
       double signorm = 2.48e-2*1e3;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
-    
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+          
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -444,7 +452,7 @@ void xi_ups2_13(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
     
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -461,11 +469,12 @@ void xi_ups2_13(TGraphAsymmErrors **g, TH1F **h)
       
       double signorm = 1.93e-2*1e3;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
-    
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+          
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -496,7 +505,7 @@ void xi_ups3_13(TGraphAsymmErrors **g, TH1F **h)
     n_pts = 0;
     while(getline(file,data)) n_pts+=1;
     
-    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig[n_pts], bins[n_pts+1];
+    double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
     
     file.clear();
     file.seekg(0);
@@ -513,11 +522,12 @@ void xi_ups3_13(TGraphAsymmErrors **g, TH1F **h)
       
       double signorm = 2.18e-2*1e3;
       sig[j] = nums[5]*mass/(signorm);
-      dsig[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
-    
-    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig, dsig);
+          
+    g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
   }
@@ -542,7 +552,7 @@ void y_jpsi_7(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {30, 30, 30, 30, 12, 12, 12, 11, 9};
-  double pt_lo[nfiles][n_pts[0]], pt_hi[nfiles][n_pts[0]], y_v[nfiles][n_pts[0]], dy[nfiles][n_pts[0]], sig[nfiles][n_pts[0]], dsig[nfiles][n_pts[0]];
+  double pt_lo[nfiles][n_pts[0]], pt_hi[nfiles][n_pts[0]], y_v[nfiles][n_pts[0]], dy[nfiles][n_pts[0]], sig[nfiles][n_pts[0]], dsig_lo[nfiles][n_pts[0]], dsig_hi[nfiles][n_pts[0]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_jpsi_7_cs_y1.txt",
@@ -569,31 +579,34 @@ void y_jpsi_7(TGraphAsymmErrors **g, int y_n)
 	  
       double signorm = k < 4 ? 5.961e-2*1e3 : 1;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
     
   }
   
   for(int i = 0; i < y_n; i++) { // i reps pt bin
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) { // j repts y bin
       if(i < 3) {
 	y_av[j] = y_v[j+4][0];
 	dy_av[j] = dy[j+4][0];
 	
 	sig_av[j] = sig[j+4][i+5];
-	dsig_av[j] = dsig[j+4][i+5];
+	dsig_lo_av[j] = dsig_lo[j+4][i+5];
+	dsig_hi_av[j] = dsig_hi[j+4][i+5];
       }
       else {
 	y_av[j] = y_v[j][0];
 	dy_av[j] = dy[j][0];
 	
 	sig_av[j] = sig[j][j<4 ? i-3 : i+5];
-	dsig_av[j] = dsig[j][j<4 ? i-3 : i+5];
+	dsig_lo_av[j] = dsig_lo[j][j<4 ? i-3 : i+5];
+	dsig_hi_av[j] = dsig_hi[j][j<4 ? i-3 : i+5];
       }
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av); 
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av); 
   }
 }
 
@@ -609,7 +622,7 @@ void y_psi2_7(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {18, 18, 18, 18, 11, 11, 11, 11, 11};
-  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig[nfiles][n_pts[2]];
+  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig_lo[nfiles][n_pts[0]], dsig_hi[nfiles][n_pts[0]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_psi2_7_cs_y1.txt",
@@ -637,23 +650,25 @@ void y_psi2_7(TGraphAsymmErrors **g, int y_n)
       
       double signorm = k < 4 ? 8e-3 * 1e3 : 1.;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
     
   }
   
   for(int i = 0; i < y_n; i++) { // i reps pt bin
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) { // j reps y bin
       y_av[j] = i < 2 ? y_v[j+4][0] : y_v[j][0];
       dy_av[j] = i < 2 ? dy[j+4][0] : dy[j][0];
       
       sig_av[j] = i < 2 ? sig[j+4][i+5] : sig[j][j < 4 ? i-2 : i+5];
-      dsig_av[j] = i < 2 ? dsig[j+4][i+5] : dsig[j][j < 4 ? i-2 : i+5];
+      dsig_lo_av[j] = i < 2 ? dsig_lo[j+4][i+5] : dsig_lo[j][j < 4 ? i-2 : i+5];
+      dsig_hi_av[j] = i < 2 ? dsig_hi[j+4][i+5] : dsig_hi[j][j < 4 ? i-2 : i+5];
 
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av);
   }
 }
 
@@ -669,7 +684,7 @@ void y_ups1_7(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {22, 22, 24, 25, 24, 21, 15};
-  double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig[nfiles][n_pts[3]];
+  double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig_lo[nfiles][n_pts[3]], dsig_hi[nfiles][n_pts[3]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_ups1_7_cs_y1.txt",
@@ -695,29 +710,32 @@ void y_ups1_7(TGraphAsymmErrors **g, int y_n)
       
       double signorm = k < 2 ? 1.2*2.48e-2*1e6 : 2.48e-2*1e3;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
         
   }
   
   for(int i = 0; i < y_n; i++) {
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) {
       y_av[j] = y_v[j][0];
       dy_av[j] = dy[j][0];
-
+      
       if(j<2) { // CMS bins, 2 GeV
-      sig_av[j] = sig[j][i];
-      dsig_av[j] = dsig[j][i];
+	sig_av[j] = sig[j][i];
+	dsig_lo_av[j] = dsig_lo[j][i];
+	dsig_hi_av[j] = dsig_hi[j][i];
       }
       else { // LHCb bins, 1 GeV
 	sig_av[j] = 0.5*(sig[j][2*i+10]+sig[j][2*i+11]);
-	dsig_av[j] = 0.5*(dsig[j][2*i+10]+dsig[j][2*i+11]);
+	dsig_lo_av[j] = 0.5*(dsig_lo[j][2*i+10]+dsig_lo[j][2*i+11]);
+	dsig_hi_av[j] = 0.5*(dsig_hi[j][2*i+10]+dsig_hi[j][2*i+11]);
       }
       
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av);
   }
 }
 
@@ -733,7 +751,7 @@ void y_ups2_7(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {22, 22, 24, 25, 24, 21, 15};
-  double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig[nfiles][n_pts[3]];
+  double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig_lo[nfiles][n_pts[3]], dsig_hi[nfiles][n_pts[3]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_ups2_7_cs_y1.txt",
@@ -759,29 +777,32 @@ void y_ups2_7(TGraphAsymmErrors **g, int y_n)
       
       double signorm = k < 2 ? 1.2*1.93e-2*1e6 : 1.93e-2*1e3;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
         
   }
   
   for(int i = 0; i < y_n; i++) {
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) {
       y_av[j] = y_v[j][0];
       dy_av[j] = dy[j][0];
 
       if(j<2) { // CMS bins, 2 GeV
-      sig_av[j] = sig[j][i];
-      dsig_av[j] = dsig[j][i];
+	sig_av[j] = sig[j][i];
+	dsig_hi_av[j] = dsig_hi[j][i];
+	dsig_lo_av[j] = dsig_lo[j][i];
       }
       else { // LHCb bins, 1 GeV
 	sig_av[j] = 0.5*(sig[j][2*i+10]+sig[j][2*i+11]);
-	dsig_av[j] = 0.5*(dsig[j][2*i+10]+dsig[j][2*i+11]);
+	dsig_lo_av[j] = 0.5*(dsig_lo[j][2*i+10]+dsig_lo[j][2*i+11]);
+	dsig_hi_av[j] = 0.5*(dsig_hi[j][2*i+10]+dsig_hi[j][2*i+11]);
       }
       
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av);
   }
 
 }
@@ -798,7 +819,7 @@ void y_ups3_7(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {22, 22, 24, 25, 24, 21, 15};
-  double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig[nfiles][n_pts[3]];
+  double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig_lo[nfiles][n_pts[3]], dsig_hi[nfiles][n_pts[3]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_ups3_7_cs_y1.txt",
@@ -824,29 +845,32 @@ void y_ups3_7(TGraphAsymmErrors **g, int y_n)
       
       double signorm = k < 2 ? 1.2*2.18e-2*1e6 : 2.18e-2*1e3;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
         
   }
   
   for(int i = 0; i < y_n; i++) {
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) {
       y_av[j] = y_v[j][0];
       dy_av[j] = dy[j][0];
 
       if(j<2) { // CMS bins, 2 GeV
-      sig_av[j] = sig[j][i];
-      dsig_av[j] = dsig[j][i];
+	sig_av[j] = sig[j][i];
+	dsig_lo_av[j] = dsig_lo[j][i];
+	dsig_hi_av[j] = dsig_hi[j][i];
       }
       else { // LHCb bins, 1 GeV
 	sig_av[j] = 0.5*(sig[j][2*i+10]+sig[j][2*i+11]);
-	dsig_av[j] = 0.5*(dsig[j][2*i+10]+dsig[j][2*i+11]);
+	dsig_lo_av[j] = 0.5*(dsig_lo[j][2*i+10]+dsig_lo[j][2*i+11]);
+	dsig_hi_av[j] = 0.5*(dsig_hi[j][2*i+10]+dsig_hi[j][2*i+11]);
       }
       
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av);
   }
 
 
@@ -866,7 +890,7 @@ void y_jpsi_13(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {21, 21, 21, 21, 14, 14, 14, 14, 14};
-  double pt_lo[nfiles][n_pts[0]], pt_hi[nfiles][n_pts[0]], y_v[nfiles][n_pts[0]], dy[nfiles][n_pts[0]], sig[nfiles][n_pts[0]], dsig[nfiles][n_pts[0]];
+  double pt_lo[nfiles][n_pts[0]], pt_hi[nfiles][n_pts[0]], y_v[nfiles][n_pts[0]], dy[nfiles][n_pts[0]], sig[nfiles][n_pts[0]], dsig_lo[nfiles][n_pts[0]], dsig_hi[nfiles][n_pts[0]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_jpsi_13_cs_y1.txt",
@@ -893,22 +917,24 @@ void y_jpsi_13(TGraphAsymmErrors **g, int y_n)
 	  
       double signorm = k < 4 ? 5.961e-2*1e3 : 1;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
     
   }
   
   for(int i = 0; i < y_n; i++) { // i reps pt bin
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) { // j repts y bin
       y_av[j] = y_v[j+4][0];
       dy_av[j] = dy[j+4][0];
 	
       sig_av[j] = sig[j+4][i+7];
-      dsig_av[j] = dsig[j+4][i+7];
+      dsig_lo_av[j] = dsig_lo[j+4][i+7];
+      dsig_hi_av[j] = dsig_hi[j+4][i+7];
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av); 
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av); 
   }
   
 
@@ -926,7 +952,7 @@ void y_psi2_13(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {9, 9, 9, 9, 17, 17, 16, 15, 14};
-  double pt_lo[nfiles][n_pts[4]], pt_hi[nfiles][n_pts[4]], y_v[nfiles][n_pts[4]], dy[nfiles][n_pts[4]], sig[nfiles][n_pts[4]], dsig[nfiles][n_pts[4]];
+  double pt_lo[nfiles][n_pts[4]], pt_hi[nfiles][n_pts[4]], y_v[nfiles][n_pts[4]], dy[nfiles][n_pts[4]], sig[nfiles][n_pts[4]], dsig_lo[nfiles][n_pts[4]], dsig_hi[nfiles][n_pts[4]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_psi2_13_cs_y1.txt",
@@ -954,23 +980,25 @@ void y_psi2_13(TGraphAsymmErrors **g, int y_n)
       
       double signorm = k < 4 ? 8e-3 * 1e3 : 1.;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
     
   }
   
   for(int i = 0; i < y_n; i++) { // i reps pt bin
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) { // j reps y bin
       y_av[j] = y_v[j+4][0];
       dy_av[j] = dy[j+4][0];
       
       sig_av[j] = sig[j+4][i+6];
-      dsig_av[j] = dsig[j+4][i+6];
+      dsig_lo_av[j] = dsig_lo[j+4][i+6];
+      dsig_hi_av[j] = dsig_hi[j+4][i+6];
     }
     
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av);
 
   }
 }
@@ -987,7 +1015,7 @@ void y_ups1_13(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {17, 17, 24, 23, 24, 23, 16};
-  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig[nfiles][n_pts[2]];
+  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig_lo[nfiles][n_pts[2]], dsig_hi[nfiles][n_pts[2]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_ups1_13_cs_y1.txt",
@@ -1013,23 +1041,25 @@ void y_ups1_13(TGraphAsymmErrors **g, int y_n)
       
       double signorm = 2.48e-2*1e3;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
         
   }
   
   for(int i = 0; i < y_n; i++) {
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) {
       y_av[j] = y_v[j+2][0];
       dy_av[j] = dy[j+2][0];
 
       sig_av[j] = 0.5*(sig[j+2][2*i+10]+sig[j+2][2*i+11]);
-      dsig_av[j] = 0.5*(dsig[j+2][2*i+10]+dsig[j+2][2*i+11]);
+      dsig_lo_av[j] = 0.5*(dsig_lo[j+2][2*i+10]+dsig_lo[j+2][2*i+11]);
+      dsig_hi_av[j] = 0.5*(dsig_hi[j+2][2*i+10]+dsig_hi[j+2][2*i+11]);
       
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av);
   }
 
 }
@@ -1046,7 +1076,7 @@ void y_ups2_13(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {17, 17, 24, 23, 24, 23, 16};
-  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig[nfiles][n_pts[2]];
+  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig_lo[nfiles][n_pts[2]], dsig_hi[nfiles][n_pts[2]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_ups2_13_cs_y1.txt",
@@ -1072,23 +1102,25 @@ void y_ups2_13(TGraphAsymmErrors **g, int y_n)
       
       double signorm = 1.93e-2*1e3;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
         
   }
   
   for(int i = 0; i < y_n; i++) {
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) {
       y_av[j] = y_v[j+2][0];
       dy_av[j] = dy[j+2][0];
 
       sig_av[j] = 0.5*(sig[j+2][2*i+10]+sig[j+2][2*i+11]);
-      dsig_av[j] = 0.5*(dsig[j+2][2*i+10]+dsig[j+2][2*i+11]);
+      dsig_lo_av[j] = 0.5*(dsig_lo[j+2][2*i+10]+dsig_lo[j+2][2*i+11]);
+      dsig_hi_av[j] = 0.5*(dsig_hi[j+2][2*i+10]+dsig_hi[j+2][2*i+11]);
       
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av);
   }
 
 }
@@ -1105,7 +1137,7 @@ void y_ups3_13(TGraphAsymmErrors **g, int y_n)
   ifstream file;
   string data;
   int n_pts[nfiles] = {17, 17, 24, 23, 24, 23, 16};
-  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig[nfiles][n_pts[2]];
+  double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig_lo[nfiles][n_pts[2]], dsig_hi[nfiles][n_pts[2]];
   double nums[12];
   
   string filelist[nfiles] = {"data/CMS_ups3_13_cs_y1.txt",
@@ -1131,23 +1163,25 @@ void y_ups3_13(TGraphAsymmErrors **g, int y_n)
       
       double signorm = 2.18e-2*1e3;
       sig[k][j] = nums[5]*mass/(signorm);
-      dsig[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_hi[k][j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])*mass/(signorm);
+      dsig_lo[k][j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
         
   }
   
   for(int i = 0; i < y_n; i++) {
-    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_av[n_val[i]];
+    double y_av[n_val[i]], sig_av[n_val[i]], dy_av[n_val[i]], dsig_lo_av[n_val[i]], dsig_hi_av[n_val[i]];
     for(int j = 0; j < n_val[i]; j++) {
       y_av[j] = y_v[j+2][0];
       dy_av[j] = dy[j+2][0];
 
       sig_av[j] = 0.5*(sig[j+2][2*i+10]+sig[j+2][2*i+11]);
-      dsig_av[j] = 0.5*(dsig[j+2][2*i+10]+dsig[j+2][2*i+11]);
+      dsig_lo_av[j] = 0.5*(dsig_lo[j+2][2*i+10]+dsig_lo[j+2][2*i+11]);
+      dsig_hi_av[j] = 0.5*(dsig_hi[j+2][2*i+10]+dsig_hi[j+2][2*i+11]);
       
     }
-    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_av, dsig_av);
+    g[i] = new TGraphAsymmErrors(n_val[i], y_av, sig_av, dy_av, dy_av, dsig_lo_av, dsig_hi_av);
   }
 
 }

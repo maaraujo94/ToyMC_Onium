@@ -35,7 +35,7 @@ void plot_twos()
   // part 1 : variables to be changed on each run
   
   // choose state we're plotting
-  string dataName = "ups3";   // "jpsi", "psi2", "ups1", "ups2", "ups3"
+  string dataName = "ups1";   // "jpsi", "psi2", "ups1", "ups2", "ups3"
   // choose sqrt(s) we're plotting
   string sqsNames[2] = {"7", "13"};   // "7", "13"
 
@@ -424,7 +424,7 @@ void plot_twos()
 	  
 	}
       }
-
+      
       /////////////////////////////////////////
       // part 4 : making the MC histograms
 

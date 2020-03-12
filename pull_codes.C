@@ -18,7 +18,8 @@ void xi_Pulls(TGraphAsymmErrors** graph, TH1F** histo, TGraphAsymmErrors** pull,
       double xvals[nb-fb], yvals[nb-fb], exlo[nb-fb], exhi[nb-fb], ey[nb-fb];
       double *g_x = graph[i]->GetX();
       double *g_y = graph[i]->GetY();
-      double *g_e = graph[i]->GetEYhigh();
+      double *g_eyl = graph[i]->GetEYlow();
+      double *g_eyh = graph[i]->GetEYhigh();
       double *g_exl = graph[i]->GetEXlow();
       double *g_exh = graph[i]->GetEXhigh();
       
@@ -26,7 +27,7 @@ void xi_Pulls(TGraphAsymmErrors** graph, TH1F** histo, TGraphAsymmErrors** pull,
 	{
 	  double mc_val = histo[i]->GetBinContent(j+fb+1);
 	  double data_val = g_y[j+fb];
-	  double data_err = g_e[j+fb];
+	  double data_err = 0.5*(g_eyl[j+fb]+g_eyh[j+fb]);
 
 	  xvals[j] = g_x[j+fb];
 	  exlo[j] = g_exl[j+fb];
@@ -48,7 +49,8 @@ void y_Pulls(TGraphAsymmErrors** graph, TH1F** histo, TGraphAsymmErrors** pull, 
 
       double *g_x = graph[i]->GetX();
       double *g_y = graph[i]->GetY();
-      double *g_e = graph[i]->GetEYhigh();
+      double *g_eyl = graph[i]->GetEYlow();
+      double *g_eyh = graph[i]->GetEYhigh();
       double *g_exl = graph[i]->GetEXlow();
       double *g_exh = graph[i]->GetEXhigh();
 
@@ -59,7 +61,7 @@ void y_Pulls(TGraphAsymmErrors** graph, TH1F** histo, TGraphAsymmErrors** pull, 
 	  
 	  double mc_val = histo[i]->GetBinContent(bin);
 	  double data_val = g_y[j];
-	  double data_err = g_e[j];
+	  double data_err = 0.5*(g_eyl[j]+g_eyh[j]);
 
 	  xvals[j] = g_x[j];
 	  exlo[j] = g_exl[j];
