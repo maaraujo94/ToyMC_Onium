@@ -4,7 +4,7 @@
 */
 
 // xi codes - 7 TeV
-void xi_jpsi_7(TGraphAsymmErrors **g, TH1F **h)
+void xi_jpsi_7(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 3.097;
 
@@ -52,12 +52,13 @@ void xi_jpsi_7(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
+
   }
   
 }
 
-void xi_psi2_7(TGraphAsymmErrors **g, TH1F **h)
+void xi_psi2_7(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 3.686;
   
@@ -105,12 +106,12 @@ void xi_psi2_7(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
   }
   
 }
 
-void xi_ups1_7(TGraphAsymmErrors **g, TH1F **h)
+void xi_ups1_7(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 9.46;
   
@@ -157,12 +158,12 @@ void xi_ups1_7(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
   }
   
 }
 
-void xi_ups2_7(TGraphAsymmErrors **g, TH1F **h)
+void xi_ups2_7(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 10.023;
   
@@ -209,12 +210,12 @@ void xi_ups2_7(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
   }
  
 }
 
-void xi_ups3_7(TGraphAsymmErrors **g, TH1F **h)
+void xi_ups3_7(TGraphAsymmErrors **g, TH1F ***h)
 { 
   double mass = 10.355;
   
@@ -261,14 +262,14 @@ void xi_ups3_7(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
   }
  
  
 }
 
 // xi codes - 13 TeV
-void xi_jpsi_13(TGraphAsymmErrors **g, TH1F **h)
+void xi_jpsi_13(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 3.097;
 
@@ -316,13 +317,13 @@ void xi_jpsi_13(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
   }
   
 
 }
 
-void xi_psi2_13(TGraphAsymmErrors **g, TH1F **h)
+void xi_psi2_13(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 3.686;
   
@@ -371,13 +372,13 @@ void xi_psi2_13(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
     
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
 
   }
   
 }
 
-void xi_ups1_13(TGraphAsymmErrors **g, TH1F **h)
+void xi_ups1_13(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 9.46;
   
@@ -424,12 +425,12 @@ void xi_ups1_13(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
   }
 
 }
 
-void xi_ups2_13(TGraphAsymmErrors **g, TH1F **h)
+void xi_ups2_13(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 10.023;
   
@@ -476,13 +477,13 @@ void xi_ups2_13(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
   }
 
   
 }
 
-void xi_ups3_13(TGraphAsymmErrors **g, TH1F **h)
+void xi_ups3_13(TGraphAsymmErrors **g, TH1F ***h)
 {
   double mass = 10.355;
   
@@ -529,7 +530,7 @@ void xi_ups3_13(TGraphAsymmErrors **g, TH1F **h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    h[k] = new TH1F(Form("xi_y%d", k), Form("xi_y%d", k), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
   }
 
   

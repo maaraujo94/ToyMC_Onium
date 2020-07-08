@@ -19,15 +19,15 @@ using namespace std;
 PDF *pdf_ct = mkPDF("CT14nnlo", 0);
 
 // how many events to generate. The events will be weighted by the partonic cross section, so many of them will count very little.
-const int n_events = 1e7;
-//const int n_events = 1e5;
+//const int n_events = 1e7;
+const int n_events = 1e3;
 
 const int n_s_val = 2;
 double sqrts[n_s_val] = {7000, 13000};  // write here collision energy in GeV
 double s[n_s_val];
 
-const double M = 3.097; // for the Jpsi
-//const double M = 3.686; // for the Psi(2S)
+//const double M = 3.097; // for the Jpsi
+const double M = 3.686; // for the Psi(2S)
 //const double M = 9.46;  // for the Ups(1S)
 //const double M = 10.023;  // for the Ups(2S)
 //const double M = 10.355;  // for the Ups(3S)
@@ -41,9 +41,8 @@ const double sstar_min = pow( xi_min + sqrt(1. + xi_min*xi_min), 2.);
 double sstar_max = sqrts[n_s_val-1]*sqrts[n_s_val-1]/(M*M);
 
 // defining here all the fit conditions and parameters
-//const double beta = 2.;
-const double beta = 1.;
-const double rho = 2.;
+const double beta = 2.;
+const double rho = 3.;
 const double delta = 0.;
 
 const double avgkT2 = 1.;
@@ -244,6 +243,7 @@ void qqbarMC(){
       w_qg[i] = fJacobian * func_quarkPDF( x2[i], s_hat, s[i] ) * func_gluonPDF( x1[i], s_hat, s[i] );
     }
     w_cos = xsect_cosa(cosalpha, sstar);
+    cout << "s^star = " << sstar << "; cosalpha = " << cosalpha << "; w_cos = " << w_cos << endl;
     w_sstar = xsect_sstar->Eval(sstar);
 
     // other kinematic variables to be stored

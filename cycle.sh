@@ -8,3 +8,8 @@ gSystem->AddIncludePath("/home/mariana/local/include")
 .x $com
 .q
 EOF
+
+echo "ending of file here: [state]_beta[val]"
+read fname
+
+mv MC_res.root MC_res_$fname.root
