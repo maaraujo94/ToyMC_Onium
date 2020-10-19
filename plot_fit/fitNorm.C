@@ -1,3 +1,6 @@
+// code that reads stored TGraph data and TH1 MC plots
+// and fits normalizations, lumi NP and f_beta1
+
 #import "pull_codes.C"
 #import "dev_code.C"
 

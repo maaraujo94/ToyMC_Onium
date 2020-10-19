@@ -1,3 +1,6 @@
+// code to generate a MC sample for a given state and (beta,rho,delta) set
+// generates both sqrt(s) values 7 and 13 TeV
+
 #include "Riostream.h"
 #include "TSystem.h"
 #include "TString.h"

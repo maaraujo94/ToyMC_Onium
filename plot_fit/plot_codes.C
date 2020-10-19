@@ -1,6 +1,8 @@
 /* auxiliary file with all the data-reading codes
-   - xi-ordered for J/psi, Psi(2S), Ups(1S) @ 7 TeV
+   - xi-ordered for J/psi, Psi(2S), Ups(nS) @ 7, 13 TeV
+     also initializes histogram for MC
    - y-ordered for same
+     pT bins chosen for maximal intersection btw samples
 */
 
 // xi codes - 7 TeV
@@ -52,7 +54,8 @@ void xi_jpsi_7(TGraphAsymmErrors **g, TH1F ***h)
           
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
-    for(int ib = 0; ib < 2; ib++) h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
+    for(int ib = 0; ib < 2; ib++)
+      h[ib][k] = new TH1F(Form("xi_y%d_b%d", k, ib), Form("xi_y%d_b%d", k, ib), n_pts, bins); 
 
   }
   

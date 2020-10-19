@@ -1,3 +1,7 @@
+// code to get the pulls from a set of points,
+// given the data TGraph and the MC TH1F
+
+// xi bins are defined regularly + need to cut at pT/M_min
 void xi_Pulls(TGraphAsymmErrors** graph, TH1F** histo, TGraphAsymmErrors** pull, int nvals)
 {
   for(int i = 0; i < nvals; i++)
@@ -39,7 +43,7 @@ void xi_Pulls(TGraphAsymmErrors** graph, TH1F** histo, TGraphAsymmErrors** pull,
     }
 }
 
-
+// y bins are defined irregularly + no minimum y cut
 void y_Pulls(TGraphAsymmErrors** graph, TH1F** histo, TGraphAsymmErrors** pull, int nvals)
 {
   for(int i = 0; i < nvals; i++)

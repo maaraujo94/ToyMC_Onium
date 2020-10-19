@@ -1,3 +1,6 @@
+// code to calculate the relative deviation between data and MC
+// only done for xi plots
+
 void xi_Devs(TGraphAsymmErrors** graph, TH1F** histo, TGraphAsymmErrors** devs, int nvals)
 {
   for(int i = 0; i < nvals; i++)
