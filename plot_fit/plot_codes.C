@@ -16,15 +16,15 @@ void xi_jpsi_7(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 9;
 
-  string filelist[n_y] = {"data/CMS_jpsi_7_cs_y1.txt",
-			  "data/CMS_jpsi_7_cs_y2.txt",
-			  "data/CMS_jpsi_7_cs_y3.txt",
-			  "data/CMS_jpsi_7_cs_y4.txt",
-			  "data/LHCb_jpsi_7_cs_y1.txt",
-			  "data/LHCb_jpsi_7_cs_y2.txt",
-			  "data/LHCb_jpsi_7_cs_y3.txt",
-			  "data/LHCb_jpsi_7_cs_y4.txt",
-			  "data/LHCb_jpsi_7_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_jpsi_7_cs_y1.txt",
+			  "../data/CMS_jpsi_7_cs_y2.txt",
+			  "../data/CMS_jpsi_7_cs_y3.txt",
+			  "../data/CMS_jpsi_7_cs_y4.txt",
+			  "../data/LHCb_jpsi_7_cs_y1.txt",
+			  "../data/LHCb_jpsi_7_cs_y2.txt",
+			  "../data/LHCb_jpsi_7_cs_y3.txt",
+			  "../data/LHCb_jpsi_7_cs_y4.txt",
+			  "../data/LHCb_jpsi_7_cs_y5.txt"};
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
     n_pts = 0;
@@ -71,15 +71,15 @@ void xi_psi2_7(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 9;
 
-  string filelist[n_y] = {"data/CMS_psi2_7_cs_y1.txt",
-			  "data/CMS_psi2_7_cs_y2.txt",
-			  "data/CMS_psi2_7_cs_y3.txt",
-			  "data/CMS_psi2_7_cs_y4.txt",
-			  "data/LHCb_psi2_7_cs_y1.txt",
-			  "data/LHCb_psi2_7_cs_y2.txt",
-			  "data/LHCb_psi2_7_cs_y3.txt",
-			  "data/LHCb_psi2_7_cs_y4.txt",
-			  "data/LHCb_psi2_7_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_psi2_7_cs_y1.txt",
+			  "../data/CMS_psi2_7_cs_y2.txt",
+			  "../data/CMS_psi2_7_cs_y3.txt",
+			  "../data/CMS_psi2_7_cs_y4.txt",
+			  "../data/LHCb_psi2_7_cs_y1.txt",
+			  "../data/LHCb_psi2_7_cs_y2.txt",
+			  "../data/LHCb_psi2_7_cs_y3.txt",
+			  "../data/LHCb_psi2_7_cs_y4.txt",
+			  "../data/LHCb_psi2_7_cs_y5.txt"};
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
     n_pts = 0;
@@ -124,13 +124,13 @@ void xi_ups1_7(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 7; 
 
-  string filelist[n_y] = {"data/CMS_ups1_7_cs_y1.txt",
-			  "data/CMS_ups1_7_cs_y2.txt",
-			  "data/LHCb_ups1_7_cs_y1.txt",
-			  "data/LHCb_ups1_7_cs_y2.txt",
-			  "data/LHCb_ups1_7_cs_y3.txt",
-			  "data/LHCb_ups1_7_cs_y4.txt",
-			  "data/LHCb_ups1_7_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_ups1_7_cs_y1.txt",
+			  "../data/CMS_ups1_7_cs_y2.txt",
+			  "../data/LHCb_ups1_7_cs_y1.txt",
+			  "../data/LHCb_ups1_7_cs_y2.txt",
+			  "../data/LHCb_ups1_7_cs_y3.txt",
+			  "../data/LHCb_ups1_7_cs_y4.txt",
+			  "../data/LHCb_ups1_7_cs_y5.txt"};
 
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
@@ -176,13 +176,13 @@ void xi_ups2_7(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 7; 
 
-  string filelist[n_y] = {"data/CMS_ups2_7_cs_y1.txt",
-			  "data/CMS_ups2_7_cs_y2.txt",
-			  "data/LHCb_ups2_7_cs_y1.txt",
-			  "data/LHCb_ups2_7_cs_y2.txt",
-			  "data/LHCb_ups2_7_cs_y3.txt",
-			  "data/LHCb_ups2_7_cs_y4.txt",
-			  "data/LHCb_ups2_7_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_ups2_7_cs_y1.txt",
+			  "../data/CMS_ups2_7_cs_y2.txt",
+			  "../data/LHCb_ups2_7_cs_y1.txt",
+			  "../data/LHCb_ups2_7_cs_y2.txt",
+			  "../data/LHCb_ups2_7_cs_y3.txt",
+			  "../data/LHCb_ups2_7_cs_y4.txt",
+			  "../data/LHCb_ups2_7_cs_y5.txt"};
 
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
@@ -228,13 +228,13 @@ void xi_ups3_7(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 7; 
 
-  string filelist[n_y] = {"data/CMS_ups3_7_cs_y1.txt",
-			  "data/CMS_ups3_7_cs_y2.txt",
-			  "data/LHCb_ups3_7_cs_y1.txt",
-			  "data/LHCb_ups3_7_cs_y2.txt",
-			  "data/LHCb_ups3_7_cs_y3.txt",
-			  "data/LHCb_ups3_7_cs_y4.txt",
-			  "data/LHCb_ups3_7_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_ups3_7_cs_y1.txt",
+			  "../data/CMS_ups3_7_cs_y2.txt",
+			  "../data/LHCb_ups3_7_cs_y1.txt",
+			  "../data/LHCb_ups3_7_cs_y2.txt",
+			  "../data/LHCb_ups3_7_cs_y3.txt",
+			  "../data/LHCb_ups3_7_cs_y4.txt",
+			  "../data/LHCb_ups3_7_cs_y5.txt"};
 
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
@@ -282,15 +282,15 @@ void xi_jpsi_13(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 9;
 
-  string filelist[n_y] = {"data/CMS_jpsi_13_cs_y1.txt",
-			  "data/CMS_jpsi_13_cs_y2.txt",
-			  "data/CMS_jpsi_13_cs_y3.txt",
-			  "data/CMS_jpsi_13_cs_y4.txt",
-			  "data/LHCb_jpsi_13_cs_y1.txt",
-			  "data/LHCb_jpsi_13_cs_y2.txt",
-			  "data/LHCb_jpsi_13_cs_y3.txt",
-			  "data/LHCb_jpsi_13_cs_y4.txt",
-			  "data/LHCb_jpsi_13_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_jpsi_13_cs_y1.txt",
+			  "../data/CMS_jpsi_13_cs_y2.txt",
+			  "../data/CMS_jpsi_13_cs_y3.txt",
+			  "../data/CMS_jpsi_13_cs_y4.txt",
+			  "../data/LHCb_jpsi_13_cs_y1.txt",
+			  "../data/LHCb_jpsi_13_cs_y2.txt",
+			  "../data/LHCb_jpsi_13_cs_y3.txt",
+			  "../data/LHCb_jpsi_13_cs_y4.txt",
+			  "../data/LHCb_jpsi_13_cs_y5.txt"};
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
     n_pts = 0;
@@ -336,15 +336,15 @@ void xi_psi2_13(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 9;
 
-  string filelist[n_y] = {"data/CMS_psi2_13_cs_y1.txt",
-			  "data/CMS_psi2_13_cs_y2.txt",
-			  "data/CMS_psi2_13_cs_y3.txt",
-			  "data/CMS_psi2_13_cs_y4.txt",
-			  "data/LHCb_psi2_13_cs_y1.txt",
-			  "data/LHCb_psi2_13_cs_y2.txt",
-			  "data/LHCb_psi2_13_cs_y3.txt",
-			  "data/LHCb_psi2_13_cs_y4.txt",
-			  "data/LHCb_psi2_13_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_psi2_13_cs_y1.txt",
+			  "../data/CMS_psi2_13_cs_y2.txt",
+			  "../data/CMS_psi2_13_cs_y3.txt",
+			  "../data/CMS_psi2_13_cs_y4.txt",
+			  "../data/LHCb_psi2_13_cs_y1.txt",
+			  "../data/LHCb_psi2_13_cs_y2.txt",
+			  "../data/LHCb_psi2_13_cs_y3.txt",
+			  "../data/LHCb_psi2_13_cs_y4.txt",
+			  "../data/LHCb_psi2_13_cs_y5.txt"};
 
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
@@ -391,13 +391,13 @@ void xi_ups1_13(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 7; 
 
-  string filelist[n_y] = {"data/CMS_ups1_13_cs_y1.txt",
-			  "data/CMS_ups1_13_cs_y2.txt",
-			  "data/LHCb_ups1_13_cs_y1.txt",
-			  "data/LHCb_ups1_13_cs_y2.txt",
-			  "data/LHCb_ups1_13_cs_y3.txt",
-			  "data/LHCb_ups1_13_cs_y4.txt",
-			  "data/LHCb_ups1_13_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_ups1_13_cs_y1.txt",
+			  "../data/CMS_ups1_13_cs_y2.txt",
+			  "../data/LHCb_ups1_13_cs_y1.txt",
+			  "../data/LHCb_ups1_13_cs_y2.txt",
+			  "../data/LHCb_ups1_13_cs_y3.txt",
+			  "../data/LHCb_ups1_13_cs_y4.txt",
+			  "../data/LHCb_ups1_13_cs_y5.txt"};
 
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
@@ -443,13 +443,13 @@ void xi_ups2_13(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 7; 
 
-  string filelist[n_y] = {"data/CMS_ups2_13_cs_y1.txt",
-			  "data/CMS_ups2_13_cs_y2.txt",
-			  "data/LHCb_ups2_13_cs_y1.txt",
-			  "data/LHCb_ups2_13_cs_y2.txt",
-			  "data/LHCb_ups2_13_cs_y3.txt",
-			  "data/LHCb_ups2_13_cs_y4.txt",
-			  "data/LHCb_ups2_13_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_ups2_13_cs_y1.txt",
+			  "../data/CMS_ups2_13_cs_y2.txt",
+			  "../data/LHCb_ups2_13_cs_y1.txt",
+			  "../data/LHCb_ups2_13_cs_y2.txt",
+			  "../data/LHCb_ups2_13_cs_y3.txt",
+			  "../data/LHCb_ups2_13_cs_y4.txt",
+			  "../data/LHCb_ups2_13_cs_y5.txt"};
 
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
@@ -496,13 +496,13 @@ void xi_ups3_13(TGraphAsymmErrors **g, TH1F ***h)
   double nums[12];
   const int n_y = 7; 
 
-  string filelist[n_y] = {"data/CMS_ups3_13_cs_y1.txt",
-			  "data/CMS_ups3_13_cs_y2.txt",
-			  "data/LHCb_ups3_13_cs_y1.txt",
-			  "data/LHCb_ups3_13_cs_y2.txt",
-			  "data/LHCb_ups3_13_cs_y3.txt",
-			  "data/LHCb_ups3_13_cs_y4.txt",
-			  "data/LHCb_ups3_13_cs_y5.txt"};
+  string filelist[n_y] = {"../data/CMS_ups3_13_cs_y1.txt",
+			  "../data/CMS_ups3_13_cs_y2.txt",
+			  "../data/LHCb_ups3_13_cs_y1.txt",
+			  "../data/LHCb_ups3_13_cs_y2.txt",
+			  "../data/LHCb_ups3_13_cs_y3.txt",
+			  "../data/LHCb_ups3_13_cs_y4.txt",
+			  "../data/LHCb_ups3_13_cs_y5.txt"};
 
   for(int k = 0; k < n_y; k++) {
     file.open(filelist[k].c_str());
@@ -559,15 +559,15 @@ void y_jpsi_7(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[0]], pt_hi[nfiles][n_pts[0]], y_v[nfiles][n_pts[0]], dy[nfiles][n_pts[0]], sig[nfiles][n_pts[0]], dsig_lo[nfiles][n_pts[0]], dsig_hi[nfiles][n_pts[0]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_jpsi_7_cs_y1.txt",
-			     "data/CMS_jpsi_7_cs_y2.txt",
-			     "data/CMS_jpsi_7_cs_y3.txt",
-			     "data/CMS_jpsi_7_cs_y4.txt",
-			     "data/LHCb_jpsi_7_cs_y1.txt",
-			     "data/LHCb_jpsi_7_cs_y2.txt",
-			     "data/LHCb_jpsi_7_cs_y3.txt",
-			     "data/LHCb_jpsi_7_cs_y4.txt",
-			     "data/LHCb_jpsi_7_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_jpsi_7_cs_y1.txt",
+			     "../data/CMS_jpsi_7_cs_y2.txt",
+			     "../data/CMS_jpsi_7_cs_y3.txt",
+			     "../data/CMS_jpsi_7_cs_y4.txt",
+			     "../data/LHCb_jpsi_7_cs_y1.txt",
+			     "../data/LHCb_jpsi_7_cs_y2.txt",
+			     "../data/LHCb_jpsi_7_cs_y3.txt",
+			     "../data/LHCb_jpsi_7_cs_y4.txt",
+			     "../data/LHCb_jpsi_7_cs_y5.txt"};
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
 	
@@ -629,15 +629,15 @@ void y_psi2_7(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig_lo[nfiles][n_pts[0]], dsig_hi[nfiles][n_pts[0]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_psi2_7_cs_y1.txt",
-			     "data/CMS_psi2_7_cs_y2.txt",
-			     "data/CMS_psi2_7_cs_y3.txt",
-			     "data/CMS_psi2_7_cs_y4.txt",
-			     "data/LHCb_psi2_7_cs_y1.txt",
-			     "data/LHCb_psi2_7_cs_y2.txt",
-			     "data/LHCb_psi2_7_cs_y3.txt",
-			     "data/LHCb_psi2_7_cs_y4.txt",
-			     "data/LHCb_psi2_7_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_psi2_7_cs_y1.txt",
+			     "../data/CMS_psi2_7_cs_y2.txt",
+			     "../data/CMS_psi2_7_cs_y3.txt",
+			     "../data/CMS_psi2_7_cs_y4.txt",
+			     "../data/LHCb_psi2_7_cs_y1.txt",
+			     "../data/LHCb_psi2_7_cs_y2.txt",
+			     "../data/LHCb_psi2_7_cs_y3.txt",
+			     "../data/LHCb_psi2_7_cs_y4.txt",
+			     "../data/LHCb_psi2_7_cs_y5.txt"};
   
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
@@ -691,13 +691,13 @@ void y_ups1_7(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig_lo[nfiles][n_pts[3]], dsig_hi[nfiles][n_pts[3]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_ups1_7_cs_y1.txt",
-			     "data/CMS_ups1_7_cs_y2.txt",
-			     "data/LHCb_ups1_7_cs_y1.txt",
-			     "data/LHCb_ups1_7_cs_y2.txt",
-			     "data/LHCb_ups1_7_cs_y3.txt",
-			     "data/LHCb_ups1_7_cs_y4.txt",
-			     "data/LHCb_ups1_7_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_ups1_7_cs_y1.txt",
+			     "../data/CMS_ups1_7_cs_y2.txt",
+			     "../data/LHCb_ups1_7_cs_y1.txt",
+			     "../data/LHCb_ups1_7_cs_y2.txt",
+			     "../data/LHCb_ups1_7_cs_y3.txt",
+			     "../data/LHCb_ups1_7_cs_y4.txt",
+			     "../data/LHCb_ups1_7_cs_y5.txt"};
   
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
@@ -758,13 +758,13 @@ void y_ups2_7(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig_lo[nfiles][n_pts[3]], dsig_hi[nfiles][n_pts[3]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_ups2_7_cs_y1.txt",
-			     "data/CMS_ups2_7_cs_y2.txt",
-			     "data/LHCb_ups2_7_cs_y1.txt",
-			     "data/LHCb_ups2_7_cs_y2.txt",
-			     "data/LHCb_ups2_7_cs_y3.txt",
-			     "data/LHCb_ups2_7_cs_y4.txt",
-			     "data/LHCb_ups2_7_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_ups2_7_cs_y1.txt",
+			     "../data/CMS_ups2_7_cs_y2.txt",
+			     "../data/LHCb_ups2_7_cs_y1.txt",
+			     "../data/LHCb_ups2_7_cs_y2.txt",
+			     "../data/LHCb_ups2_7_cs_y3.txt",
+			     "../data/LHCb_ups2_7_cs_y4.txt",
+			     "../data/LHCb_ups2_7_cs_y5.txt"};
   
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
@@ -826,13 +826,13 @@ void y_ups3_7(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[3]], pt_hi[nfiles][n_pts[3]], y_v[nfiles][n_pts[3]], dy[nfiles][n_pts[3]], sig[nfiles][n_pts[3]], dsig_lo[nfiles][n_pts[3]], dsig_hi[nfiles][n_pts[3]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_ups3_7_cs_y1.txt",
-			     "data/CMS_ups3_7_cs_y2.txt",
-			     "data/LHCb_ups3_7_cs_y1.txt",
-			     "data/LHCb_ups3_7_cs_y2.txt",
-			     "data/LHCb_ups3_7_cs_y3.txt",
-			     "data/LHCb_ups3_7_cs_y4.txt",
-			     "data/LHCb_ups3_7_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_ups3_7_cs_y1.txt",
+			     "../data/CMS_ups3_7_cs_y2.txt",
+			     "../data/LHCb_ups3_7_cs_y1.txt",
+			     "../data/LHCb_ups3_7_cs_y2.txt",
+			     "../data/LHCb_ups3_7_cs_y3.txt",
+			     "../data/LHCb_ups3_7_cs_y4.txt",
+			     "../data/LHCb_ups3_7_cs_y5.txt"};
   
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
@@ -897,15 +897,15 @@ void y_jpsi_13(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[0]], pt_hi[nfiles][n_pts[0]], y_v[nfiles][n_pts[0]], dy[nfiles][n_pts[0]], sig[nfiles][n_pts[0]], dsig_lo[nfiles][n_pts[0]], dsig_hi[nfiles][n_pts[0]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_jpsi_13_cs_y1.txt",
-			     "data/CMS_jpsi_13_cs_y2.txt",
-			     "data/CMS_jpsi_13_cs_y3.txt",
-			     "data/CMS_jpsi_13_cs_y4.txt",
-			     "data/LHCb_jpsi_13_cs_y1.txt",
-			     "data/LHCb_jpsi_13_cs_y2.txt",
-			     "data/LHCb_jpsi_13_cs_y3.txt",
-			     "data/LHCb_jpsi_13_cs_y4.txt",
-			     "data/LHCb_jpsi_13_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_jpsi_13_cs_y1.txt",
+			     "../data/CMS_jpsi_13_cs_y2.txt",
+			     "../data/CMS_jpsi_13_cs_y3.txt",
+			     "../data/CMS_jpsi_13_cs_y4.txt",
+			     "../data/LHCb_jpsi_13_cs_y1.txt",
+			     "../data/LHCb_jpsi_13_cs_y2.txt",
+			     "../data/LHCb_jpsi_13_cs_y3.txt",
+			     "../data/LHCb_jpsi_13_cs_y4.txt",
+			     "../data/LHCb_jpsi_13_cs_y5.txt"};
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
 	
@@ -959,15 +959,15 @@ void y_psi2_13(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[4]], pt_hi[nfiles][n_pts[4]], y_v[nfiles][n_pts[4]], dy[nfiles][n_pts[4]], sig[nfiles][n_pts[4]], dsig_lo[nfiles][n_pts[4]], dsig_hi[nfiles][n_pts[4]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_psi2_13_cs_y1.txt",
-			     "data/CMS_psi2_13_cs_y2.txt",
-			     "data/CMS_psi2_13_cs_y3.txt",
-			     "data/CMS_psi2_13_cs_y4.txt",
-			     "data/LHCb_psi2_13_cs_y1.txt",
-			     "data/LHCb_psi2_13_cs_y2.txt",
-			     "data/LHCb_psi2_13_cs_y3.txt",
-			     "data/LHCb_psi2_13_cs_y4.txt",
-			     "data/LHCb_psi2_13_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_psi2_13_cs_y1.txt",
+			     "../data/CMS_psi2_13_cs_y2.txt",
+			     "../data/CMS_psi2_13_cs_y3.txt",
+			     "../data/CMS_psi2_13_cs_y4.txt",
+			     "../data/LHCb_psi2_13_cs_y1.txt",
+			     "../data/LHCb_psi2_13_cs_y2.txt",
+			     "../data/LHCb_psi2_13_cs_y3.txt",
+			     "../data/LHCb_psi2_13_cs_y4.txt",
+			     "../data/LHCb_psi2_13_cs_y5.txt"};
   
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
@@ -1022,13 +1022,13 @@ void y_ups1_13(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig_lo[nfiles][n_pts[2]], dsig_hi[nfiles][n_pts[2]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_ups1_13_cs_y1.txt",
-			     "data/CMS_ups1_13_cs_y2.txt",
-			     "data/LHCb_ups1_13_cs_y1.txt",
-			     "data/LHCb_ups1_13_cs_y2.txt",
-			     "data/LHCb_ups1_13_cs_y3.txt",
-			     "data/LHCb_ups1_13_cs_y4.txt",
-			     "data/LHCb_ups1_13_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_ups1_13_cs_y1.txt",
+			     "../data/CMS_ups1_13_cs_y2.txt",
+			     "../data/LHCb_ups1_13_cs_y1.txt",
+			     "../data/LHCb_ups1_13_cs_y2.txt",
+			     "../data/LHCb_ups1_13_cs_y3.txt",
+			     "../data/LHCb_ups1_13_cs_y4.txt",
+			     "../data/LHCb_ups1_13_cs_y5.txt"};
   
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
@@ -1083,13 +1083,13 @@ void y_ups2_13(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig_lo[nfiles][n_pts[2]], dsig_hi[nfiles][n_pts[2]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_ups2_13_cs_y1.txt",
-			     "data/CMS_ups2_13_cs_y2.txt",
-			     "data/LHCb_ups2_13_cs_y1.txt",
-			     "data/LHCb_ups2_13_cs_y2.txt",
-			     "data/LHCb_ups2_13_cs_y3.txt",
-			     "data/LHCb_ups2_13_cs_y4.txt",
-			     "data/LHCb_ups2_13_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_ups2_13_cs_y1.txt",
+			     "../data/CMS_ups2_13_cs_y2.txt",
+			     "../data/LHCb_ups2_13_cs_y1.txt",
+			     "../data/LHCb_ups2_13_cs_y2.txt",
+			     "../data/LHCb_ups2_13_cs_y3.txt",
+			     "../data/LHCb_ups2_13_cs_y4.txt",
+			     "../data/LHCb_ups2_13_cs_y5.txt"};
   
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());
@@ -1144,13 +1144,13 @@ void y_ups3_13(TGraphAsymmErrors **g, int y_n)
   double pt_lo[nfiles][n_pts[2]], pt_hi[nfiles][n_pts[2]], y_v[nfiles][n_pts[2]], dy[nfiles][n_pts[2]], sig[nfiles][n_pts[2]], dsig_lo[nfiles][n_pts[2]], dsig_hi[nfiles][n_pts[2]];
   double nums[12];
   
-  string filelist[nfiles] = {"data/CMS_ups3_13_cs_y1.txt",
-			     "data/CMS_ups3_13_cs_y2.txt",
-			     "data/LHCb_ups3_13_cs_y1.txt",
-			     "data/LHCb_ups3_13_cs_y2.txt",
-			     "data/LHCb_ups3_13_cs_y3.txt",
-			     "data/LHCb_ups3_13_cs_y4.txt",
-			     "data/LHCb_ups3_13_cs_y5.txt"};
+  string filelist[nfiles] = {"../data/CMS_ups3_13_cs_y1.txt",
+			     "../data/CMS_ups3_13_cs_y2.txt",
+			     "../data/LHCb_ups3_13_cs_y1.txt",
+			     "../data/LHCb_ups3_13_cs_y2.txt",
+			     "../data/LHCb_ups3_13_cs_y3.txt",
+			     "../data/LHCb_ups3_13_cs_y4.txt",
+			     "../data/LHCb_ups3_13_cs_y5.txt"};
   
   for(int k = 0; k < nfiles; k++) {
     file.open(filelist[k].c_str());

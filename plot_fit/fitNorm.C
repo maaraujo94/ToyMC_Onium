@@ -42,7 +42,7 @@ vector< string > parseString( string line, string deli) {
 // chisquare function
 double myFunction(double *par)
 {
-  const int n_norm = 2;
+  const int n_norm = 5;
   double norm[n_norm];
   for(int i = 0; i < n_norm; i++)
     norm[i] = par[i];
@@ -79,9 +79,9 @@ double myFunction(double *par)
 	// state defines overall norm
 	if(bin_c[i].state == "jpsi") mc_val *= norm[0];
 	if(bin_c[i].state == "psi2") mc_val *= norm[1];
-	//if(bin_c[i].state == "ups1") mc_val *= norm[2];
-	//if(bin_c[i].state == "ups2") mc_val *= norm[3];
-	//if(bin_c[i].state == "ups3") mc_val *= norm[4];
+	if(bin_c[i].state == "ups1") mc_val *= norm[2];
+	if(bin_c[i].state == "ups2") mc_val *= norm[3];
+	if(bin_c[i].state == "ups3") mc_val *= norm[4];
 	
 	// exp, sqrt(s) define lumi unc NP (in general)
 	if(bin_c[i].exp == "CMS" && bin_c[i].sqrts == 7) {
@@ -104,9 +104,9 @@ double myFunction(double *par)
   // constraints for the NP
   chisquare += pow((LC7-1.)/0.022,2);
   chisquare += pow((LC13-1.)/0.023,2);
-  //chisquare += pow((LL7_j-1.)/0.035,2);
-  //chisquare += pow((LL7-1.)/0.017,2);
-  //chisquare += pow((LL13-1.)/0.039,2);
+  chisquare += pow((LL7_j-1.)/0.035,2);
+  chisquare += pow((LL7-1.)/0.017,2);
+  chisquare += pow((LL13-1.)/0.039,2);
   
   return chisquare;
 }
@@ -120,17 +120,18 @@ void minuitFunction(int& nDim, double* gout, double& result, double par[], int f
 // main fitting code
 void fitNorm()
 {
-  const int n_state = 2;
+  const int n_state = 3;
   const int n_beta = 2;
-  string sList[] = {"jpsi", "psi2"};
+  string sList[] = {"jpsi", "psi2", "ups1"};
   int bList[] = {1, 2};
   double normFactor[n_beta][n_state];
   int n_plots[n_state];
+  string type = "rho2delta0/";
 
   // open file first time to get normalizations and nr histos/graphs
   for(int is = 0; is < n_state; is++) {
     string state = sList[is];
-    TFile *f1 = new TFile(Form("MC_rho3delta0/MC_vs_Data_%s.root", state.c_str()));
+    TFile *f1 = new TFile(Form("%sMC_vs_Data_%s.root", type.c_str(), state.c_str()));
     
     TIter next(f1->GetListOfKeys());
     TKey *key;
@@ -166,7 +167,7 @@ void fitNorm()
   int ct = 0;
   for(int is = 0; is < n_state; is++) {
     string state = sList[is];
-    TFile *f2 = new TFile(Form("MC_rho3delta0/MC_vs_Data_%s.root", state.c_str()));
+    TFile *f2 = new TFile(Form("%sMC_vs_Data_%s.root", type.c_str(), state.c_str()));
 
     TIter n_ent(f2->GetListOfKeys());
     TKey *key;
@@ -218,22 +219,38 @@ void fitNorm()
   }
 
   // fitting process
-  int n_pars = n_state + 5 + 1;
+  int n_allS = 5;
+  int n_pars = n_allS + 5 + 1;
   
   TFitter *fit = new TFitter(n_pars);
   fit->SetFCN(minuitFunction);
 
-  for(int is = 0; is < n_state; is++)
-    fit->SetParameter(is, Form("%s_norm", sList[is].c_str()), normFactor[1][is], normFactor[1][is]/10., 0, 0);
   
-  fit->SetParameter(n_state, "L_CMS_7", 1., 0.1, 0, 0);
-  fit->SetParameter(n_state+1, "L_CMS_13", 1., 0.1, 0, 0);
-  fit->SetParameter(n_state+2, "L_LHCb_7_j", 1., 0.1, 0, 0);
-  fit->SetParameter(n_state+3, "L_LHCb_7", 1., 0.1, 0, 0);
-  fit->SetParameter(n_state+4, "L_LHCb_13", 1., 0.1, 0, 0);
+  string fList[] = {"jpsi", "psi2", "ups1", "ups2", "ups3"};
+  for(int is = 0; is < n_allS; is++) {
+    int ct = 0;
+    for(int ir = 0; ir < n_state; ir++) {
+      if(fList[is].find(sList[ir]) != string::npos) { 
+	fit->SetParameter(is, Form("%s_norm", fList[is].c_str()), normFactor[1][is], normFactor[1][is]/10., 0, 0);
+	ct = 1;
+      }
+    }
+    if(ct == 0) {
+      fit->SetParameter(is, Form("%s_norm", fList[is].c_str()), 1., 1., 0, 0);
+      fit->FixParameter(is);
+    }
+  }
+  
+  
+  fit->SetParameter(n_allS, "L_CMS_7", 1., 0.1, 0, 0);
+  fit->SetParameter(n_allS+1, "L_CMS_13", 1., 0.1, 0, 0);
+  fit->SetParameter(n_allS+2, "L_LHCb_7_j", 1., 0.1, 0, 0);
+  fit->SetParameter(n_allS+3, "L_LHCb_7", 1., 0.1, 0, 0);
+  fit->SetParameter(n_allS+4, "L_LHCb_13", 1., 0.1, 0, 0);
   //for(int inp = 0; inp < 5; inp++) fit->FixParameter(n_state+inp);
 
-  fit->SetParameter(n_pars-1, "f_beta1", 0.1, 0.1, 0, 0);
+  fit->SetParameter(n_pars-1, "f_beta1", 0., 0.1, 0, 0);
+  fit->FixParameter(n_pars-1);
   
   fit->ExecuteCommand("MIGRAD", 0, 0);
 
@@ -264,9 +281,9 @@ void fitNorm()
 
   // print fit results in a TeX file
   ofstream tex;
-  tex.open("fitPar.tex");
+  tex.open(Form("%sfitPar.tex", type.c_str()));
 
-  string stateTex[] = {"J/\\psi", "\\psi(2S)"};
+  string stateTex[] = {"J/\\psi", "\\psi(2S)", "\\Upsilon(1S)", "\\Upsilon(2S)", "\\Upsilon(3S)"};
   string NPTex[5] = {"\\text{CMS,7}", "\\text{CMS,13}", "\\text{LHCb,7},J/\\psi", "\\text{LHCb,7}", "\\text{LHCb,13}"};
   float lumi_unc[5] = {0.022, 0.023, 0.035, 0.017, 0.039};
   
@@ -276,24 +293,30 @@ void fitNorm()
   tex << "Parameter & Value $(\\times10^3)$ & Parameter & Value & Dev ($\\sigma$) \\\\" << endl;
   tex << "\\hline" << endl;
   for(int i_tex = 0; i_tex < 5; i_tex++) {
-    if(i_tex < n_state) {
-      int p_norm = ceil(-log10(fit->GetParError(i_tex)/1000.))+1;
-      int p_NP = ceil(-log10(fit->GetParError(n_state+i_tex)))+1;
+    if(i_tex < n_allS) {
+      if (fit->GetParError(i_tex) > 0) {
+	int p_norm = ceil(-log10(fit->GetParError(i_tex)/1000.))+1;
+	tex << "$N_{" << stateTex[i_tex] << "}$ & $" << setprecision(p_norm) << fixed << pars[i_tex]/1000. << "\\pm" << fit->GetParError(i_tex)/1000. << "$ &";
+      }
+      else {
+	tex << "$N_{" << stateTex[i_tex] << "}$ & $" << setprecision(1) << fixed << pars[i_tex]/1000.  << "$ &";
+      }
+      int p_NP = ceil(-log10(fit->GetParError(n_allS+i_tex)))+1;
 
-      float sig_dev = (pars[i_tex+n_state]-1.)/lumi_unc[i_tex];
+      float sig_dev = (pars[i_tex+n_allS]-1.)/lumi_unc[i_tex];
       int p_sig = 1;
       if(abs(sig_dev) < 1) p_sig = ceil(-log10(abs(sig_dev)))+1;
     
-      tex << "$N_{" << stateTex[i_tex] << "}$ & $" << setprecision(p_norm) << fixed << pars[i_tex]/1000. << "\\pm" << fit->GetParError(i_tex)/1000. << "$ & $L_{" << NPTex[i_tex] << "}$ & $" << setprecision(p_NP) << fixed << pars[i_tex+n_state] << "\\pm" << fit->GetParError(n_state+i_tex) << "$ & " << setprecision(p_sig) << fixed << sig_dev << " \\\\" << endl;
+      tex << " $L_{" << NPTex[i_tex] << "}$ & $" << setprecision(p_NP) << fixed << pars[i_tex+n_allS] << "\\pm" << fit->GetParError(n_allS+i_tex) << "$ & " << setprecision(p_sig) << fixed << sig_dev << " \\\\" << endl;
     }
     else {
-      int p_NP = ceil(-log10(fit->GetParError(n_state+i_tex)))+1;
+      int p_NP = ceil(-log10(fit->GetParError(n_allS+i_tex)))+1;
 
-      float sig_dev = (pars[i_tex+n_state]-1.)/lumi_unc[i_tex];
+      float sig_dev = (pars[i_tex+n_allS]-1.)/lumi_unc[i_tex];
       int p_sig = 1;
       if(abs(sig_dev) < 1) p_sig = ceil(-log10(abs(sig_dev)))+1;
-      if(i_tex == n_state) tex << "\\hline " << endl;
-      tex << " &  & $L_{" << NPTex[i_tex] << "}$ & $" << setprecision(p_NP) << fixed << pars[i_tex+n_state] << "\\pm" << fit->GetParError(n_state+i_tex) << "$ & " << setprecision(p_sig) << fixed << sig_dev << " \\\\" << endl;
+      if(i_tex == n_allS) tex << "\\hline " << endl;
+      tex << " &  & $L_{" << NPTex[i_tex] << "}$ & $" << setprecision(p_NP) << fixed << pars[i_tex+n_allS] << "\\pm" << fit->GetParError(n_allS+i_tex) << "$ & " << setprecision(p_sig) << fixed << sig_dev << " \\\\" << endl;
     }
   }
   tex << "\\hline" << endl;
@@ -306,17 +329,17 @@ void fitNorm()
   tex.close();
     
   // store all results and plots in same file
-  TFile *fout = new TFile("Fit_results.root", "recreate"); // will store updated plots
+  TFile *fout = new TFile(Form("%sFit_results.root", type.c_str()), "recreate"); // will store updated plots
   
   TTree *fit_norms = new TTree("fit_norms", "fit norm factors");
   
-  for(int is = 0; is < n_state; is++)
-    TBranch *xi_nf = fit_norms->Branch(Form("%s_norm", sList[is].c_str()), &pars[is]);
-  TBranch *C_7_unc = fit_norms->Branch("CMS_7_lumi_unc", &pars[n_state]);
-  TBranch *C_13_unc = fit_norms->Branch("CMS_13_lumi_unc", &pars[n_state+1]);
-  TBranch *L_7_j_unc = fit_norms->Branch("LHCb_7_jpsi_lumi_unc", &pars[n_state+2]);
-  TBranch *L_7_unc = fit_norms->Branch("LHCb_7_lumi_unc", &pars[n_state+3]);
-  TBranch *L_13_unc = fit_norms->Branch("LHCb_13_lumi_unc", &pars[n_state+4]);
+  for(int is = 0; is < n_allS; is++)
+    TBranch *xi_nf = fit_norms->Branch(Form("%s_norm", fList[is].c_str()), &pars[is]);
+  TBranch *C_7_unc = fit_norms->Branch("CMS_7_lumi_unc", &pars[n_allS]);
+  TBranch *C_13_unc = fit_norms->Branch("CMS_13_lumi_unc", &pars[n_allS+1]);
+  TBranch *L_7_j_unc = fit_norms->Branch("LHCb_7_jpsi_lumi_unc", &pars[n_allS+2]);
+  TBranch *L_7_unc = fit_norms->Branch("LHCb_7_lumi_unc", &pars[n_allS+3]);
+  TBranch *L_13_unc = fit_norms->Branch("LHCb_13_lumi_unc", &pars[n_allS+4]);
   TBranch *f_b1 = fit_norms->Branch("f_beta1", &pars[n_pars-1]);
   
   fit_norms->Fill();
@@ -502,20 +525,23 @@ void fitNorm()
 	  //TGraphAsymmErrors* g = bin_c[i].Data_graph;
 	
 	  // apply norms and corrections to struct histos and graph
-	  bin_c[i].MC_beta1->Scale(pars[is]);
-	  bin_c[i].MC_beta2->Scale(pars[is]);
-
+	  for(int ir = 0; ir < n_allS; ir++) 
+	    if(fList[ir].find(sList[is]) != string::npos)  {
+	      bin_c[i].MC_beta1->Scale(pars[ir]);
+	      bin_c[i].MC_beta2->Scale(pars[ir]);
+	    }
+	  
 	  for(int i_bin = 0; i_bin < bin_c[i].Data_graph->GetN(); i_bin++) {
 	    if(bin_c[i].exp == "CMS" && sqsVal == 7) 
-	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_state];
+	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_allS];
 	    else if(bin_c[i].exp == "CMS" && sqsVal == 13)
-	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_state+1];
+	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_allS+1];
 	    else if(bin_c[i].exp == "LHCb" && sqsVal == 7 && state == "jpsi")
-	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_state+2];
+	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_allS+2];
 	    else if(bin_c[i].exp == "LHCb" && sqsVal == 7 && state != "jpsi")
-	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_state+3];
+	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_allS+3];
 	    else if(bin_c[i].exp == "LHCb" && sqsVal == 13)
-	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_state+4];
+	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_allS+4];
 	  }
 	  
 	  TH1F *h_comb = (TH1F*)bin_c[i].MC_beta1->Clone();
@@ -556,7 +582,7 @@ void fitNorm()
 	  lc.DrawLatex(xpos, ypos, Form("#chi^{2}/ndf = %.0f / %d", minimum, npts));
 	  
 	  
-	  can->SaveAs(Form("plots_%s/xi_%d_y%d.pdf", state.c_str(), bin_c[i].sqrts, ct));
+	  can->SaveAs(Form("%splots_%s/xi_%d_y%d.pdf", type.c_str(), state.c_str(), bin_c[i].sqrts, ct));
 	  can->Clear();
 
 	  j_y++;
@@ -664,7 +690,7 @@ void fitNorm()
   
   leg_xip->Draw();
   
-  can->SaveAs(Form("xi_pulls_full.pdf"));
+  can->SaveAs(Form("%sxi_pulls_full.pdf", type.c_str()));
   can->Clear();
   
   // running the deviation btw data, model (each and global)
@@ -757,7 +783,7 @@ void fitNorm()
       
       leg_xid->Draw();
       
-      can->SaveAs(Form("xi_devs_%s_%d.pdf", state.c_str(), sqsVal));
+      can->SaveAs(Form("%sxi_devs_%s_%d.pdf", type.c_str(), state.c_str(), sqsVal));
       can->Clear();
     }
   }
@@ -852,7 +878,7 @@ void fitNorm()
   
   leg_xid->Draw();
   
-  can->SaveAs(Form("xi_devs_full.pdf"));
+  can->SaveAs(Form("%sxi_devs_full.pdf", type.c_str()));
   can->Clear();
   
 }
