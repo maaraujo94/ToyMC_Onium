@@ -1,5 +1,6 @@
-// code to plot profiles
-// produce the lambdas and lambda_tilde as a function of pT for some rapidity binning (similar to LHCb eg - 6, 7, 8 y bins) for the three cases (psi + Ups(1S))
+// code to plot profiles of the necessary angular quantities for calculating lambdas
+// obtained in bins of y, as a function of pT/M
+// also stored in ROOT file
 
 void plot_prof()
 {
@@ -41,7 +42,7 @@ void plot_prof()
 
     string fName = Form("%s%sMC_res_%s", loc.c_str(), type.c_str(), dataName.c_str());   // file to open
 
-    TFile *outfile = new TFile(Form("ang_profs/plots_%s.root", dataName.c_str()), "RECREATE");
+    TFile *outfile = new TFile(Form("%sang_profs/plots_%s.root", type.c_str(), dataName.c_str()), "RECREATE");
     outfile->Close();
   
     for(int i_sqs = 0; i_sqs < n_sqs; i_sqs++)
@@ -152,7 +153,7 @@ void plot_prof()
 	/////////////////////////////////////////
 	// part 5 : plotting
 
-	TFile *outfile2 = new TFile(Form("plots_%s.root", dataName.c_str()), "UPDATE");
+	TFile *outfile2 = new TFile(Form("%sang_profs/plots_%s.root", type.c_str(), dataName.c_str()), "UPDATE");
 	
 	TCanvas *can = new TCanvas("", "", 700, 700);
 	
@@ -196,7 +197,7 @@ void plot_prof()
 	ct2->SetLineStyle(kDotted);
 	ct2->Draw();
 	
-	can->SaveAs(Form("ang_profs/%s_cos2th_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_profs/%s_cos2th_trans_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	costh[2][0]->Draw("error");
@@ -207,7 +208,7 @@ void plot_prof()
 	ct1->Draw();
 	ct2->Draw();
 	
-	can->SaveAs(Form("ang_profs/%s_cos2th_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_profs/%s_cos2th_long_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	// draw the phi plots
@@ -224,7 +225,7 @@ void plot_prof()
 	ph2->SetLineStyle(kDotted);
 	ph2->Draw();
 
-	can->SaveAs(Form("ang_profs/%s_cos2phi_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_profs/%s_cos2phi_trans_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	phi[2][0]->Draw("error");
@@ -236,7 +237,7 @@ void plot_prof()
 	ph1->Draw();
 	ph2->Draw();
 
-	can->SaveAs(Form("ang_profs/%s_cos2phi_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_profs/%s_cos2phi_long_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	// draw the phith plots
@@ -253,7 +254,7 @@ void plot_prof()
 	pt2->SetLineStyle(kDotted);
 	pt2->Draw();
 
-	can->SaveAs(Form("ang_profs/%s_phitheta_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_profs/%s_phitheta_trans_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	phith[2][0]->Draw("error");
@@ -266,7 +267,7 @@ void plot_prof()
 	pt2->Draw();
 
 	
-	can->SaveAs(Form("ang_profs/%s_phitheta_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_profs/%s_phitheta_long_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
       }
   }

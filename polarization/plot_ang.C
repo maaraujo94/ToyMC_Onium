@@ -1,5 +1,4 @@
-// code to plot angular distributions
-// produce the lambdas and lambda_tilde as a function of pT for some rapidity binning (similar to LHCb eg - 6, 7, 8 y bins) for the three cases (psi + Ups(1S))
+// code to plot angular distributions in bins of y, for all pT
 
 void plot_ang()
 {
@@ -41,7 +40,7 @@ void plot_ang()
 
     string fName = Form("%s%sMC_res_%s", loc.c_str(), type.c_str(), dataName.c_str());   // file to open
 
-    TFile *outfile = new TFile(Form("plots_%s.root", dataName.c_str()), "RECREATE");
+    TFile *outfile = new TFile(Form("%splots_%s.root", type.c_str(), dataName.c_str()), "RECREATE");
     outfile->Close();
   
     for(int i_sqs = 0; i_sqs < n_sqs; i_sqs++)
@@ -136,7 +135,7 @@ void plot_ang()
 	/////////////////////////////////////////
 	// part 5 : plotting
 
-	TFile *outfile2 = new TFile(Form("plots_%s.root", dataName.c_str()), "UPDATE");
+	TFile *outfile2 = new TFile(Form("%splots_%s.root", type.c_str(), dataName.c_str()), "UPDATE");
 	
 	TCanvas *can = new TCanvas("", "", 700, 700);
 	string fr[4] = {"HX", "ggHX", "HX", "ggHX"};
@@ -173,7 +172,7 @@ void plot_ang()
 	  costh[1][i]->Draw("hist same");
 	}
 	
-	can->SaveAs(Form("ang_plots/%s_costh_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_plots/%s_costh_trans_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	costh[2][0]->Draw("hist");
@@ -182,7 +181,7 @@ void plot_ang()
 	  costh[3][i]->Draw("hist same");
 	}
 	
-	can->SaveAs(Form("ang_plots/%s_costh_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_plots/%s_costh_long_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	// draw the phi plots
@@ -192,7 +191,7 @@ void plot_ang()
 	  phi[1][i]->Draw("hist same");
 	}
 	
-	can->SaveAs(Form("ang_plots/%s_phi_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_plots/%s_phi_trans_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	phi[2][0]->Draw("hist");
@@ -201,7 +200,7 @@ void plot_ang()
 	  phi[3][i]->Draw("hist same");
 	}
 	
-	can->SaveAs(Form("ang_plots/%s_phi_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_plots/%s_phi_long_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	// draw the phi_t plots
@@ -211,7 +210,7 @@ void plot_ang()
 	  phi_t[1][i]->Draw("hist same");
 	}
 	
-	can->SaveAs(Form("ang_plots/%s_phi_t_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_plots/%s_phi_t_trans_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
 	
 	phi_t[2][0]->Draw("hist");
@@ -220,7 +219,7 @@ void plot_ang()
 	  phi_t[3][i]->Draw("hist same");
 	}
 	
-	can->SaveAs(Form("ang_plots/%s_phi_t_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%sang_plots/%s_phi_t_long_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
 	can->Clear();
       }
   }

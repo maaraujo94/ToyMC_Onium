@@ -1,3 +1,6 @@
+// code to determine the lambda parameters from the TProfiles of angular quantities
+// reads TProfiles from ROOT file
+
 double lambda_theta(double cos2th)
 {
   return (1.-3.*cos2th)/(cos2th-3./5.);
@@ -33,8 +36,10 @@ double e_ltp(double sc, double esc, double lth, double elth)
 }
 
 void get_lambda()
-{
-  TFile *infile = new TFile("ang_profs/plots_jpsi.root");
+{ 
+  string dataName = "jpsi", sqsName = "7";
+
+  TFile *infile = new TFile(Form("ang_profs/plots_%s.root", dataName.c_str()));
 
   int y_bins = 4;
   double ylims[y_bins+1];
@@ -119,7 +124,7 @@ void get_lambda()
   }
 
   TCanvas *c = new TCanvas("","",700,700);
-  string polN[2] = {"tr", "lg"};
+  string polN[2] = {"trans", "long"};
   string fullN[2] = {"transverse", "longitudinal"};
 
   TLegend *leg = new TLegend(0.6, 0.6, 0.9, 0.9);
@@ -136,7 +141,7 @@ void get_lambda()
       fc->SetXTitle("#xi");
       fc->SetYTitle("#lambda_{#theta}");
       fc->GetYaxis()->SetTitleOffset(1.3);
-      fc->SetTitle(Form("7 TeV #lambda_{#theta} %s", fullN[i_pol/2].c_str()));
+      fc->SetTitle(Form("%s TeV #lambda_{#theta} %s", sqsName.c_str(), fullN[i_pol/2].c_str()));
     }
     
     for(int i_y = 0; i_y < y_bins; i_y++) {
@@ -145,7 +150,7 @@ void get_lambda()
 
     if(i_pol%2 == 1) {
       leg->Draw();
-      c->SaveAs(Form("lambda_plots/lth_%s.pdf", polN[(i_pol-1)/2].c_str()));
+      c->SaveAs(Form("lambda_plots/%s_l_theta_%s_%s.pdf", dataName.c_str(), polN[(i_pol-1)/2].c_str(), sqsName.c_str()));
       c->Clear();
     }
   }
@@ -156,7 +161,7 @@ void get_lambda()
       fc->SetXTitle("#xi");
       fc->SetYTitle("#lambda_{#phi}");
       fc->GetYaxis()->SetTitleOffset(1.3);
-      fc->SetTitle(Form("7 TeV #lambda_{#phi} %s", fullN[i_pol/2].c_str()));
+      fc->SetTitle(Form("%s TeV #lambda_{#phi} %s", sqsName.c_str(), fullN[i_pol/2].c_str()));
     }
     
     for(int i_y = 0; i_y < y_bins; i_y++) {
@@ -165,7 +170,7 @@ void get_lambda()
 
     if(i_pol%2 == 1) {
       leg->Draw();
-      c->SaveAs(Form("lambda_plots/lp_%s.pdf", polN[(i_pol-1)/2].c_str()));
+      c->SaveAs(Form("lambda_plots/%s_l_phi_%s_%s.pdf", dataName.c_str(), polN[(i_pol-1)/2].c_str(), sqsName.c_str()));
       c->Clear();
     }
   }
@@ -176,7 +181,7 @@ void get_lambda()
       fc->SetXTitle("#xi");
       fc->SetYTitle("#lambda_{#theta#phi}");
       fc->GetYaxis()->SetTitleOffset(1.3);
-      fc->SetTitle(Form("7 TeV #lambda_{#theta#phi} %s", fullN[i_pol/2].c_str()));
+      fc->SetTitle(Form("%s TeV #lambda_{#theta#phi} %s", sqsName.c_str(), fullN[i_pol/2].c_str()));
     }
     
     for(int i_y = 0; i_y < y_bins; i_y++) {
@@ -185,7 +190,7 @@ void get_lambda()
 
     if(i_pol%2 == 1) {
       leg->Draw();
-      c->SaveAs(Form("lambda_plots/ltp_%s.pdf", polN[(i_pol-1)/2].c_str()));
+      c->SaveAs(Form("lambda_plots/%s_l_thetaphi_%s_%s.pdf", dataName.c_str(), polN[(i_pol-1)/2].c_str(), sqsName.c_str()));
       c->Clear();
     }
   }

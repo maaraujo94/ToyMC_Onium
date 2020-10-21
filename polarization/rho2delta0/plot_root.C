@@ -1,6 +1,11 @@
+// code to plot cleaned up versions of profiles
+// to avoid repeating lengthy tree reading process
+// reads TProfiles off of ROOT file
+
 void plot_root()
 {
-  TFile *infile = new TFile("ang_profs/plots_jpsi.root");
+  string type = "rho2delta0/";
+  TFile *infile = new TFile(Form("ang_profs/plots_jpsi.root"));
 
   string dataName = "jpsi";
   string sqsName = "7";
@@ -26,9 +31,9 @@ void plot_root()
   TCanvas *can = new TCanvas("","",700,700);
   for(int j = 0; j < 4; j++) {
     for(int i = 0; i < y_bins; i++) {
-      costh[j][i]->GetYaxis()->SetRangeUser(0,1);
-      phi[j][i]->GetYaxis()->SetRangeUser(-1,1);
-      phith[j][i]->GetYaxis()->SetRangeUser(-1,1);
+      costh[j][i]->GetYaxis()->SetRangeUser(0.1,0.5);
+      phi[j][i]->GetYaxis()->SetRangeUser(-0.6,0.6);
+      phith[j][i]->GetYaxis()->SetRangeUser(-0.5,0.5);
 
       costh[j][i]->SetStats(0);
       phi[j][i]->SetStats(0);
@@ -50,13 +55,17 @@ void plot_root()
   ct2->SetLineStyle(kDotted);
   ct2->Draw();
 
-  TLegend *leg = new TLegend(0.6, 0.6, 0.9, 0.9);
-  leg->SetTextSize(0.03);
+  TLegend *legt = new TLegend(0.6, 0.6, 0.9, 0.9);
+  legt->SetTextSize(0.03);
+  TLegend *legb = new TLegend(0.6, 0.1, 0.9, 0.4);
+  legb->SetTextSize(0.03);
   for(int i = 0; i < y_bins; i++) {
-    leg->AddEntry(costh[0][i], Form("%.0f < |y| < %.0f ppHX", ylims[i], ylims[i+1]), "pl");
-    leg->AddEntry(costh[1][i], Form("%.0f < |y| < %.0f ggHX", ylims[i], ylims[i+1]), "pl");
+    legt->AddEntry(costh[0][i], Form("%.0f < |y| < %.0f ppHX", ylims[i], ylims[i+1]), "pl");
+    legt->AddEntry(costh[1][i], Form("%.0f < |y| < %.0f ggHX", ylims[i], ylims[i+1]), "pl");
+    legb->AddEntry(costh[0][i], Form("%.0f < |y| < %.0f ppHX", ylims[i], ylims[i+1]), "pl");
+    legb->AddEntry(costh[1][i], Form("%.0f < |y| < %.0f ggHX", ylims[i], ylims[i+1]), "pl");
   }
-  leg->Draw();
+  legb->Draw();
   
   can->SaveAs(Form("ang_profs/%s_cos2th_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
   can->Clear();
@@ -70,7 +79,7 @@ void plot_root()
   ct1->Draw();
   ct2->Draw();
 	
-  leg->Draw();
+  legt->Draw();
 
   can->SaveAs(Form("ang_profs/%s_cos2th_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
   can->Clear();
@@ -90,7 +99,7 @@ void plot_root()
   ph2->SetLineStyle(kDotted);
   ph2->Draw();
 
-  leg->Draw();
+  legt->Draw();
   
   can->SaveAs(Form("ang_profs/%s_cos2phi_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
   can->Clear();
@@ -105,7 +114,7 @@ void plot_root()
   ph1->Draw();
   ph2->Draw();
 
-  leg->Draw();
+  legt->Draw();
   
   can->SaveAs(Form("ang_profs/%s_cos2phi_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
   can->Clear();
@@ -125,7 +134,7 @@ void plot_root()
   pt2->SetLineStyle(kDotted);
   pt2->Draw();
 
-  leg->Draw();
+  legt->Draw();
 
   can->SaveAs(Form("ang_profs/%s_phitheta_trans_%s.pdf", dataName.c_str(), sqsName.c_str()));
   can->Clear();
@@ -141,7 +150,7 @@ void plot_root()
   pt2->Draw();
 
 
-  leg->Draw();
+  legt->Draw();
 
   can->SaveAs(Form("ang_profs/%s_phitheta_long_%s.pdf", dataName.c_str(), sqsName.c_str()));
   can->Clear();
