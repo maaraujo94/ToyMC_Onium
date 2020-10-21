@@ -40,7 +40,7 @@ void plot_ang()
 
     string fName = Form("%s%sMC_res_%s", loc.c_str(), type.c_str(), dataName.c_str());   // file to open
 
-    TFile *outfile = new TFile(Form("%splots_%s.root", type.c_str(), dataName.c_str()), "RECREATE");
+    TFile *outfile = new TFile(Form("%sang_plots/plots_%s.root", type.c_str(), dataName.c_str()), "RECREATE");
     outfile->Close();
   
     for(int i_sqs = 0; i_sqs < n_sqs; i_sqs++)
@@ -135,7 +135,7 @@ void plot_ang()
 	/////////////////////////////////////////
 	// part 5 : plotting
 
-	TFile *outfile2 = new TFile(Form("%splots_%s.root", type.c_str(), dataName.c_str()), "UPDATE");
+	TFile *outfile2 = new TFile(Form("%sang_plots/plots_%s.root", type.c_str(), dataName.c_str()), "UPDATE");
 	
 	TCanvas *can = new TCanvas("", "", 700, 700);
 	string fr[4] = {"HX", "ggHX", "HX", "ggHX"};

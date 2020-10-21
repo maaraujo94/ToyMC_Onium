@@ -24,7 +24,7 @@ void plot_prof()
   // part 1 : variables to be changed on each run
 
   // type of MC files
-  string type = "rho2delta0/";
+  string type = "comp_j/";
   
   // choose state we're plotting
   const int n_states = 1;
