@@ -27,8 +27,8 @@ void plot_y()
   string type = "rho2delta0/";
   
   // choose state we're plotting
-  const int n_states = 1;
-  string dataNames[n_states] = {"jpsi"};   // "jpsi", "psi2", "ups1", "ups2", "ups3"
+  const int n_states = 3;
+  string dataNames[n_states] = {"jpsi", "psi2", "ups1"};   // "jpsi", "psi2", "ups1", "ups2", "ups3"
   // choose sqrt(s) we're plotting
   const int n_sqs = 1;
   string sqsNames[n_sqs] = {"7"};   // "7", "13"
@@ -79,7 +79,7 @@ void plot_y()
 	for(int i = 0; i < 5; i++) {
 	  y_prof[i] = new TProfile*[xi_bins];
 	  for(int j = 0; j < xi_bins; j++) {
-	    y_prof[i][j] = new TProfile(Form("y_prof%d_xi%d", i, j), Form("%s TeV %.0f < #xi < %.0f #hat{y}/y %s %s", sqsName.c_str(), xilims[j], xilims[j+1], fr[i].c_str(), pol[i].c_str()), y_bins, ylims, 0, 0.2);
+	    y_prof[i][j] = new TProfile(Form("%s_y_prof%d_xi%d", dataName.c_str(), i, j), Form("%s TeV %.0f < #xi < %.0f #hat{y}/y %s %s", sqsName.c_str(), xilims[j], xilims[j+1], fr[i].c_str(), pol[i].c_str()), y_bins, ylims, 0, 0.2);
 	    y_prof[i][j]->Sumw2();
 	  }
 	}

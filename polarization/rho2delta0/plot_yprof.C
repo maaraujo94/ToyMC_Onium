@@ -5,7 +5,7 @@
 void plot_yprof()
 {
   string type = "rho2delta0/";
-  string dataName = "jpsi";
+  string dataName = "ups1";
   string sqsName = "7";
   TFile *infile = new TFile(Form("y_profs/plots_%s.root", dataName.c_str()));
 
@@ -19,7 +19,7 @@ void plot_yprof()
   for(int i = 0; i < 5; i++) {
     y_prof[i] = new TProfile*[xi_bins];
     for(int j = 0; j < xi_bins; j++) {
-      y_prof[i][j] = (TProfile*)infile->Get(Form("y_prof%d_xi%d", i, j));
+      y_prof[i][j] = (TProfile*)infile->Get(Form("%s_y_prof%d_xi%d", dataName.c_str(), i, j));
       //     y_prof[i][j]->Sumw2();
     }
   }
@@ -27,7 +27,7 @@ void plot_yprof()
   TCanvas *can = new TCanvas("","",700,700);
   for(int j = 0; j < 5; j++) {
     for(int i = 0; i < xi_bins; i++) {
-      y_prof[j][i]->GetYaxis()->SetRangeUser(0, 0.3);
+      y_prof[j][i]->GetYaxis()->SetRangeUser(0.05, 0.25);
       y_prof[j][i]->SetStats(0);
     }
   }

@@ -27,7 +27,7 @@ void plot_yprof()
   TCanvas *can = new TCanvas("","",700,700);
   for(int j = 0; j < 5; j++) {
     for(int i = 0; i < xi_bins; i++) {
-      y_prof[j][i]->GetYaxis()->SetRangeUser(0, 0.3);
+      y_prof[j][i]->GetYaxis()->SetRangeUser(0.05, 0.25);
       y_prof[j][i]->SetStats(0);
     }
   }
