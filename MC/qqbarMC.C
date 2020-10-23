@@ -148,6 +148,8 @@ void qqbarMC(){
   double costh_ggHX[n_s_val], phi_ggHX[n_s_val],  phith_ggHX[n_s_val];
 
   double cosalpha_inv[n_s_val];
+
+  double axAngle[n_s_val];
   
   // weights to be applied to the events when any distribution is plotted (always w_cos, never w_sstar)
   double w_gg[n_s_val], w_qg[n_s_val];
@@ -182,6 +184,7 @@ void qqbarMC(){
     qqbar[i]->Branch("phith_ggHX", &phith_ggHX[i], "phith_ggHX/D");
 
     qqbar[i]->Branch("cosalpha_inv", &cosalpha_inv[i], "cosalpha_inv/D");
+    qqbar[i]->Branch("axAngle", &axAngle[i], "axAngle/D");
   
     // weights to be applied to the events when any distribution is plotted (always w_cos, never w_sstar)
     qqbar[i]->Branch( "w_gg",      &w_gg[i],      "w_gg/D"  );
@@ -253,6 +256,7 @@ void qqbarMC(){
     double Phi1 = 2. * gPI * gRandom->Uniform(1.) - gPI;
     double Phi2 = 2. * gPI * gRandom->Uniform(1.) - gPI;
 
+    //CHANGE
     double kT1 = abs(gRandom->Gaus(0, avgkT2));
     double kT2 = abs(gRandom->Gaus(0, avgkT2));
 
@@ -377,6 +381,7 @@ void qqbarMC(){
 	// HELICITY frame
 
 	newZaxis = dilep_direction;
+	TVector3 HXaxis = newZaxis;
 	newYaxis = Yaxis;
 	newXaxis = newYaxis.Cross( newZaxis );
 
@@ -447,6 +452,7 @@ void qqbarMC(){
 	if ( (y[i]-y_gg[i]) < 0 ) Yaxis_ptn = - Yaxis_ptn;
 
 	newZaxis = dilep_direction_parton;
+	TVector3 ggHXaxis = newZaxis;
 	newYaxis = Yaxis_ptn;
 	newXaxis = newYaxis.Cross( newZaxis );
 
@@ -477,6 +483,8 @@ void qqbarMC(){
 	w_PX_lg[i] = 1.5 * ( 1. - costh_PX[i]*costh_PX[i] );
 	w_ggHX_tr[i] = 0.75 * ( 1. + costh_ggHX[i]*costh_ggHX[i] );
 	w_ggHX_lg[i] = 1.5 * ( 1. - costh_ggHX[i]*costh_ggHX[i] );
+
+	axAngle[i] = HXaxis.Angle(ggHXaxis);
       }
     
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

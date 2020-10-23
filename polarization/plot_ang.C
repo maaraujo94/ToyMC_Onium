@@ -25,11 +25,11 @@ void plot_ang()
   string type = "rho2delta0/";
   
   // choose state we're plotting
-  const int n_states = 1;
-  string dataNames[n_states] = {"jpsi"};   // "jpsi", "psi2", "ups1", "ups2", "ups3"
+  const int n_states = 3;
+  string dataNames[n_states] = {"jpsi", "psi2", "ups1"};   // "jpsi", "psi2", "ups1", "ups2", "ups3"
   // choose sqrt(s) we're plotting
-  const int n_sqs = 1;
-  string sqsNames[n_sqs] = {"7"};   // "7", "13"
+  const int n_sqs = 2;
+  string sqsNames[n_sqs] = {"7", "13"};   // "7", "13"
 
   /////////////////////////////////////////
   // part 2 : vars defined by above or constant  
@@ -74,9 +74,9 @@ void plot_ang()
 	  phi[i] = new TH1F*[y_bins];
 	  phi_t[i] = new TH1F*[y_bins];
 	  for(int j = 0; j < y_bins; j++) {
-	    costh[i][j] = new TH1F(Form("h_ct%d_y%d", i, j), "cos#theta_{HX}", 100, -1, 1);
-	    phi[i][j] = new TH1F(Form("h_phi%d_y%d", i, j), "#phi_{HX}", 100, -180, 180);
-	    phi_t[i][j] = new TH1F(Form("h_pt%d_y%d", i, j), "#phi^{~}_{HX}", 100, -180, 180);
+	    costh[i][j] = new TH1F(Form("%s%s_ct%d_y%d", dataName.c_str(), sqsName.c_str(), i, j), "cos#theta_{HX}", 100, -1, 1);
+	    phi[i][j] = new TH1F(Form("%s%s_phi%d_y%d", dataName.c_str(), sqsName.c_str(), i, j), "#phi_{HX}", 100, -180, 180);
+	    phi_t[i][j] = new TH1F(Form("%s%s_pt%d_y%d", dataName.c_str(), sqsName.c_str(), i, j), "#tilde{phi}_{HX}", 100, -180, 180);
 	  }
 	}
 	
@@ -151,9 +151,9 @@ void plot_ang()
 	    phi[j][i]->SetLineStyle(j%2 == 0 ? kSolid : kDashed);
 	    phi_t[j][i]->SetLineStyle(j%2 == 0 ? kSolid : kDashed);
 	    
-	    costh[j][i]->Write(Form("%s TeV %.1f < |y| < %.1f cos#theta %s %s", sqsName.c_str(), ylims[i], ylims[i+1], fr[j].c_str(), pol[j].c_str()));
-	    phi[j][i]->Write(Form("%s TeV %.1f < |y| < %.1f #phi %s %s", sqsName.c_str(), ylims[i], ylims[i+1], fr[j].c_str(), pol[j].c_str()));
-	    phi_t[j][i]->Write(Form("%s TeV %.1f < |y| < %.1f #phi_{t} %s %s", sqsName.c_str(), ylims[i], ylims[i+1], fr[j].c_str(), pol[j].c_str()));
+	    costh[j][i]->Write();
+	    phi[j][i]->Write();
+	    phi_t[j][i]->Write();
 	    
 	    costh[j][i]->SetMinimum(0);
 	    costh[j][i]->SetMaximum(48e3);

@@ -61,25 +61,30 @@ void plot_y()
 	Double_t w_gg, w_cos; // plotting weight - fixed
 	Double_t w_HX_tr, w_ggHX_tr, w_HX_lg, w_ggHX_lg; // plotting weight - polarizations
 
-	int xi_bins = 4;
-	double xilims[xi_bins+1];
-	for(int i = 0; i <= xi_bins; i++)
-	  xilims[i] = i*10.;
-	xilims[0] = 1.;
-	
-	int y_bins = 36;
+	int y_bins = 4;
 	double ylims[y_bins+1];
 	for(int i = 0; i <= y_bins; i++)
-	  ylims[i] = -4.5+0.25*i;;
-	
-	string fr[5] = {"HX", "ggHX", "HX", "ggHX", ""};
-	string pol[5] = {"tr", "tr", "lg", "lg", "unp"};
+	  ylims[i] = i;
 
-	TProfile ***y_prof = new TProfile**[5];
-	for(int i = 0; i < 5; i++) {
-	  y_prof[i] = new TProfile*[xi_bins];
-	  for(int j = 0; j < xi_bins; j++) {
-	    y_prof[i][j] = new TProfile(Form("%s_y_prof%d_xi%d", dataName.c_str(), i, j), Form("%s TeV %.0f < #xi < %.0f #hat{y}/y %s %s", sqsName.c_str(), xilims[j], xilims[j+1], fr[i].c_str(), pol[i].c_str()), y_bins, ylims, 0, 0.2);
+	int pt_bins = 20;
+	double ptlims[pt_bins+1];
+	for(int i = 0; i < 9; i++)
+	  ptlims[i] = 1.+i;
+	for(int i = 0; i < 5; i++)
+	  ptlims[i+9] = 10.+2.*i;
+	for(int i = 0; i < 4; i++)
+	  ptlims[i+14] = 20+2.5*i;
+	for(int i = 0; i <= 2; i++)
+	  ptlims[i+18] = 30+5.*i;
+	
+	string fr[4] = {"HX", "ggHX", "HX", "ggHX"};
+	string pol[4] = {"tr", "tr", "lg", "lg"};
+
+	TProfile ***y_prof = new TProfile**[4];
+	for(int i = 0; i < 4; i++) {
+	  y_prof[i] = new TProfile*[y_bins];
+	  for(int j = 0; j < y_bins; j++) {
+	    y_prof[i][j] = new TProfile(Form("%s%s_y_prof%d_y%d", dataName.c_str(), sqsName.c_str(), i, j), Form("%s TeV %.1f < |y| < %.1f #hat{y}/y %s %s", sqsName.c_str(), ylims[j], ylims[j+1], fr[i].c_str(), pol[i].c_str()), pt_bins, ptlims, 0, 1.);
 	    y_prof[i][j]->Sumw2();
 	  }
 	}
@@ -108,17 +113,15 @@ void plot_y()
 	    tree->GetEntry(i);
 	    
 	    // xi part (forward y)
-	    for (int k = 0; k < xi_bins; k++) 
-	      if(xi > xilims[k] && xi < xilims[k+1]) {
-		y_prof[0][k]->Fill(y, (y-y_gg)/y, w_gg*w_cos*w_HX_tr);
+	    for (int k = 0; k < y_bins; k++) 
+	      if(abs(y) > ylims[k] && abs(y) < ylims[k+1]) {
+		y_prof[0][k]->Fill(xi, (y-y_gg)/y, w_gg*w_cos*w_HX_tr);
 		
-		y_prof[1][k]->Fill(y, (y-y_gg)/y, w_gg*w_cos*w_ggHX_tr);
+		y_prof[1][k]->Fill(xi, (y-y_gg)/y, w_gg*w_cos*w_ggHX_tr);
 		
-		y_prof[2][k]->Fill(y, (y-y_gg)/y, w_gg*w_cos*w_HX_lg);
+		y_prof[2][k]->Fill(xi, (y-y_gg)/y, w_gg*w_cos*w_HX_lg);
 		
-		y_prof[3][k]->Fill(y, (y-y_gg)/y, w_gg*w_cos*w_ggHX_lg);
-
-		y_prof[4][k]->Fill(y, (y-y_gg)/y, w_gg*w_cos);
+		y_prof[3][k]->Fill(xi, (y-y_gg)/y, w_gg*w_cos*w_ggHX_lg);
 	      }
 	    if((i+1)%chk == 0) {
 	      cout << (i+1)/chk << "% | " << flush;
@@ -135,14 +138,14 @@ void plot_y()
 	
 	TCanvas *can = new TCanvas("", "", 700, 700);
 	
-	for(int j = 0; j < 5; j++) {
-	  for(int i = 0; i < xi_bins; i++) {
+	for(int j = 0; j < 4; j++) {
+	  for(int i = 0; i < y_bins; i++) {
 	    int color = (i==4? i+2 : i+1);
 	    
 	    y_prof[j][i]->SetLineColor(color);
 	    y_prof[j][i]->SetMarkerColor(color);
 	    
-	    //y_prof[j][i]->SetLineStyle(j%2 == 0 ? kSolid : kDashed);
+	    y_prof[j][i]->SetLineStyle(j%2 == 0 ? kSolid : kDashed);
 	    
 	    y_prof[j][i]->SetStats(0);
 	    y_prof[j][i]->Write();

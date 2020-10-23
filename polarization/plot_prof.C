@@ -24,14 +24,14 @@ void plot_prof()
   // part 1 : variables to be changed on each run
 
   // type of MC files
-  string type = "comp_j/";
+  string type = "rho2delta0/";
   
   // choose state we're plotting
-  const int n_states = 1;
-  string dataNames[n_states] = {"jpsi"};   // "jpsi", "psi2", "ups1", "ups2", "ups3"
+  const int n_states = 3;
+  string dataNames[n_states] = {"jpsi", "psi2", "ups1"};   // "jpsi", "psi2", "ups1", "ups2", "ups3"
   // choose sqrt(s) we're plotting
-  const int n_sqs = 1;
-  string sqsNames[n_sqs] = {"7"};   // "7", "13"
+  const int n_sqs = 2;
+  string sqsNames[n_sqs] = {"7", "13"};   // "7", "13"
 
   /////////////////////////////////////////
   // part 2 : vars defined by above or constant  
@@ -89,11 +89,11 @@ void plot_prof()
 	  phi[i] = new TProfile*[y_bins];
 	  phith[i] = new TProfile*[y_bins];
 	  for(int j = 0; j < y_bins; j++) {
-	    costh[i][j] = new TProfile(Form("h_ct%d_y%d", i, j), Form("%s TeV %.1f < |y| < %.1f cos^{2}#theta_{HX} %s %s", sqsName.c_str(), ylims[j], ylims[j+1], fr[i].c_str(), pol[i].c_str()), pt_bins, ptlims, 0, 1);
+	    costh[i][j] = new TProfile(Form("%s%s_ct%d_y%d", dataName.c_str(), sqsName.c_str(), i, j), Form("%s TeV %.1f < |y| < %.1f cos^{2}#theta_{HX} %s %s", sqsName.c_str(), ylims[j], ylims[j+1], fr[i].c_str(), pol[i].c_str()), pt_bins, ptlims, 0, 1);
 	    costh[i][j]->Sumw2();
-	    phi[i][j] = new TProfile(Form("h_phi%d_y%d", i, j), Form("%s TeV %.1f < |y| < %.1f cos(2#phi_{HX}) %s %s", sqsName.c_str(), ylims[j], ylims[j+1], fr[i].c_str(), pol[i].c_str()), pt_bins, ptlims, -1, 1);
+	    phi[i][j] = new TProfile(Form("%s%s_phi%d_y%d", dataName.c_str(), sqsName.c_str(), i, j), Form("%s TeV %.1f < |y| < %.1f cos(2#phi_{HX}) %s %s", sqsName.c_str(), ylims[j], ylims[j+1], fr[i].c_str(), pol[i].c_str()), pt_bins, ptlims, -1, 1);
 	    phi[i][j]->Sumw2();
-	    phith[i][j] = new TProfile(Form("h_pt%d_y%d", i, j), Form("%s TeV %.1f < |y| < %.1f sin(2#theta_{HX})cos#phi_{HX} %s %s", sqsName.c_str(), ylims[j], ylims[j+1], fr[i].c_str(), pol[i].c_str()), pt_bins, ptlims, -1, 1);
+	    phith[i][j] = new TProfile(Form("%s%s_pt%d_y%d", dataName.c_str(), sqsName.c_str(), i, j), Form("%s TeV %.1f < |y| < %.1f sin(2#theta_{HX})cos#phi_{HX} %s %s", sqsName.c_str(), ylims[j], ylims[j+1], fr[i].c_str(), pol[i].c_str()), pt_bins, ptlims, -1, 1);
 	    phith[i][j]->Sumw2();
 	  }
 	}
@@ -127,20 +127,20 @@ void plot_prof()
 	    for (int k = 0; k < y_bins; k++) 
 	      if(abs(y) > ylims[k] && abs(y) < ylims[k+1] && xi > 1 && xi < 50) {
 		costh[0][k]->Fill(xi, costh_HX*costh_HX, w_gg*w_cos*w_HX_tr);
-		phi[0][k]->Fill(xi, cos(2.*phi_HX), w_gg*w_cos*w_HX_tr);
-		phith[0][k]->Fill(xi, 2.*sqrt(1-costh_HX*costh_HX)*costh_HX*cos(phi_HX), w_gg*w_cos*w_HX_tr);
+		phi[0][k]->Fill(xi, cos(TMath::Pi()/180.*2.*phi_HX), w_gg*w_cos*w_HX_tr);
+		phith[0][k]->Fill(xi, 2.*sqrt(1-costh_HX*costh_HX)*costh_HX*cos(TMath::Pi()/180.*phi_HX), w_gg*w_cos*w_HX_tr);
 		
 		costh[1][k]->Fill(xi, costh_HX*costh_HX, w_gg*w_cos*w_ggHX_tr);
-		phi[1][k]->Fill(xi, cos(2.*phi_HX), w_gg*w_cos*w_ggHX_tr);
-		phith[1][k]->Fill(xi, 2.*sqrt(1-costh_HX*costh_HX)*costh_HX*cos(phi_HX), w_gg*w_cos*w_ggHX_tr);
+		phi[1][k]->Fill(xi, cos(TMath::Pi()/180.*2.*phi_HX), w_gg*w_cos*w_ggHX_tr);
+		phith[1][k]->Fill(xi, 2.*sqrt(1-costh_HX*costh_HX)*costh_HX*cos(TMath::Pi()/180.*phi_HX), w_gg*w_cos*w_ggHX_tr);
 		
 		costh[2][k]->Fill(xi, costh_HX*costh_HX, w_gg*w_cos*w_HX_lg);
-		phi[2][k]->Fill(xi, cos(2.*phi_HX), w_gg*w_cos*w_HX_lg);
-		phith[2][k]->Fill(xi, 2.*sqrt(1-costh_HX*costh_HX)*costh_HX*cos(phi_HX), w_gg*w_cos*w_HX_lg);
+		phi[2][k]->Fill(xi, cos(TMath::Pi()/180.*2.*phi_HX), w_gg*w_cos*w_HX_lg);
+		phith[2][k]->Fill(xi, 2.*sqrt(1-costh_HX*costh_HX)*costh_HX*cos(TMath::Pi()/180.*phi_HX), w_gg*w_cos*w_HX_lg);
 		
 		costh[3][k]->Fill(xi, costh_HX*costh_HX, w_gg*w_cos*w_ggHX_lg);
-		phi[3][k]->Fill(xi, cos(2.*phi_HX), w_gg*w_cos*w_ggHX_lg);
-		phith[3][k]->Fill(xi, 2.*sqrt(1-costh_HX*costh_HX)*costh_HX*cos(phi_HX), w_gg*w_cos*w_ggHX_lg);
+		phi[3][k]->Fill(xi, cos(TMath::Pi()/180.*2.*phi_HX), w_gg*w_cos*w_ggHX_lg);
+		phith[3][k]->Fill(xi, 2.*sqrt(1-costh_HX*costh_HX)*costh_HX*cos(TMath::Pi()/180.*phi_HX), w_gg*w_cos*w_ggHX_lg);
 	      }
 	    if((i+1)%chk == 0) {
 	      cout << (i+1)/chk << "% | " << flush;
