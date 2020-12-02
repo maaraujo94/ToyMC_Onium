@@ -21,10 +21,10 @@ using namespace std;
 PDF *pdf_ct = mkPDF("CT14nnlo", 0);
 
 // how many events to generate. The events will be weighted by the partonic cross section, so many of them will count very little.
-const int n_events = 1e7;
+const int n_events = 1e8;
 //const int n_events = 1e3;
 
-double sqrts = 7000;  // write here collision energy in GeV
+double sqrts = 13000;  // write here collision energy in GeV
 double s = sqrts*sqrts;
 
 const double M = 91.1876;
@@ -140,6 +140,8 @@ void ZMC(){
 
   //defining the parameters to be used here
   double x1, x2, y, y_gg, sstar, cosalpha, pLstar, xi;
+  TLorentzVector *muonP = 0; // storing dimuons
+  TLorentzVector *muonN = 0;
   
   double costh_CS, phi_CS, phith_CS;
   double costh_HX, phi_HX, phith_HX;
@@ -163,23 +165,26 @@ void ZMC(){
   zbar->Branch( "xi",       &xi,       "xi/D" );
   zbar->Branch( "y",        &y,        "y/D"  );
   zbar->Branch( "y_gg",     &y_gg,     "y_gg/D"  );
+
+  zbar->Branch("muonP", &muonP);
+  zbar->Branch("muonN", &muonN);
   
-  /*    zbar->Branch("costh_CS",   &costh_CS,   "costh_CS/D");
-	zbar->Branch("phi_CS",     &phi_CS,     "phi_CS/D"  );
-	zbar->Branch("phith_CS",   &phith_CS,   "phith_CS/D");
-	zbar->Branch("costh_HX",   &costh_HX,   "costh_HX/D");
-	zbar->Branch("phi_HX",     &phi_HX,     "phi_HX/D"  );
-	zbar->Branch("phith_HX",   &phith_HX,   "phith_HX/D");
-	zbar->Branch("costh_PX",   &costh_PX,   "costh_PX/D");
-	zbar->Branch("phi_PX",     &phi_PX,     "phi_PX/D"  );
-	zbar->Branch("phith_PX",   &phith_PX,   "phith_PX/D");
-	zbar->Branch("costh_ggHX", &costh_ggHX, "costh_ggHX/D");
-	zbar->Branch("phi_ggHX",   &phi_ggHX,   "phi_ggHX/D"  );
-	zbar->Branch("phith_ggHX", &phith_ggHX, "phith_ggHX/D");
-	
-	zbar->Branch("cosalpha_inv", &cosalpha_inv, "cosalpha_inv/D");
-	zbar->Branch("axAngle", &axAngle, "axAngle/D");*/
+  zbar->Branch("costh_CS",   &costh_CS,   "costh_CS/D");
+  zbar->Branch("phi_CS",     &phi_CS,     "phi_CS/D"  );
+  zbar->Branch("phith_CS",   &phith_CS,   "phith_CS/D");
+  zbar->Branch("costh_HX",   &costh_HX,   "costh_HX/D");
+  zbar->Branch("phi_HX",     &phi_HX,     "phi_HX/D"  );
+  zbar->Branch("phith_HX",   &phith_HX,   "phith_HX/D");
+  zbar->Branch("costh_PX",   &costh_PX,   "costh_PX/D");
+  zbar->Branch("phi_PX",     &phi_PX,     "phi_PX/D"  );
+  zbar->Branch("phith_PX",   &phith_PX,   "phith_PX/D");
+  zbar->Branch("costh_ggHX", &costh_ggHX, "costh_ggHX/D");
+  zbar->Branch("phi_ggHX",   &phi_ggHX,   "phi_ggHX/D"  );
+  zbar->Branch("phith_ggHX", &phith_ggHX, "phith_ggHX/D");
   
+  zbar->Branch("cosalpha_inv", &cosalpha_inv, "cosalpha_inv/D");
+  zbar->Branch("axAngle", &axAngle, "axAngle/D");
+    
   // weights to be applied to the events when any distribution is plotted
   zbar->Branch( "jac",       &jac,       "jac/D"  );
   zbar->Branch( "w_uub",     &w_uub,     "w_uub/D"  );
@@ -188,14 +193,14 @@ void ZMC(){
   zbar->Branch( "w_dg",      &w_dg,      "w_dg/D"  );
   zbar->Branch( "w_ubg",     &w_ubg,     "w_ubg/D"  );
   zbar->Branch( "w_dbg",     &w_dbg,     "w_dbg/D"  );
-  /*zbar->Branch( "w_CS_tr",   &w_CS_tr,   "w_CS_tr/D"  );
-    zbar->Branch( "w_HX_tr",   &w_HX_tr,   "w_HX_tr/D"  );
-    zbar->Branch( "w_PX_tr",   &w_PX_tr,   "w_PX_tr/D"  );
-    zbar->Branch( "w_ggHX_tr", &w_ggHX_tr, "w_ggHX_tr/D"  );
-    zbar->Branch( "w_CS_lg",   &w_CS_lg,   "w_CS_lg/D"  );
-    zbar->Branch( "w_HX_lg",   &w_HX_lg,   "w_HX_lg/D"  );
-    zbar->Branch( "w_PX_lg",   &w_PX_lg,   "w_PX_lg/D"  );
-    zbar->Branch( "w_ggHX_lg", &w_ggHX_lg, "w_ggHX_lg/D"  );*/
+  zbar->Branch( "w_CS_tr",   &w_CS_tr,   "w_CS_tr/D"  );
+  zbar->Branch( "w_HX_tr",   &w_HX_tr,   "w_HX_tr/D"  );
+  zbar->Branch( "w_PX_tr",   &w_PX_tr,   "w_PX_tr/D"  );
+  zbar->Branch( "w_ggHX_tr", &w_ggHX_tr, "w_ggHX_tr/D"  );
+  zbar->Branch( "w_CS_lg",   &w_CS_lg,   "w_CS_lg/D"  );
+  zbar->Branch( "w_HX_lg",   &w_HX_lg,   "w_HX_lg/D"  );
+  zbar->Branch( "w_PX_lg",   &w_PX_lg,   "w_PX_lg/D"  );
+  zbar->Branch( "w_ggHX_lg", &w_ggHX_lg, "w_ggHX_lg/D"  );
   
   zbar->Branch( "pick",      &pick,      "pick/D"  );
   
@@ -206,6 +211,9 @@ void ZMC(){
   cout << "Progress: ";
   
   /////////////////// CYCLE OF EVENTS ////////////////////////
+  double x_min = sstar_min*M*M / s;//s_hat / s; // min of the parton fractional momentum; this expression derives from x1*x2 = shat / s and |x| < 1
+  double x_max = 1.; // is it true that x can always reach 1? CHECK
+
   for( int i_event = 1; i_event <= n_events; i_event++ ){
     
     // generate
@@ -214,10 +222,9 @@ void ZMC(){
     double s_hat = M*M * sstar;
 
     // random generation of either x1 or x2
-    // logx from uniform
+    // logx -> x from uniform
     pick = gRandom->Uniform(-1,1);
-    double x_min = s_hat / s; // min of the parton fractional momentum; this expression derives from x1*x2 = shat / s and |x| < 1
-    double x_max = 1.; // is it true that x can always reach 1? CHECK
+    // CHANGE
     if(pick > 0) {
       double logx1 = gRandom->Uniform(log(x_min), log(x_max));
       x1 = exp(logx1);
@@ -244,6 +251,9 @@ void ZMC(){
     y_gg = 0.5*log(x1/x2);
     y = y_hat + y_gg;
     double pL=sqrt(1+xi*xi)*sinh(y)*M;
+
+    if(xi < xi_min || xi > xi_max || abs(y) > y_max || x1 > 1 || x2 > 1)
+      continue;
     
     // u and t variables (partonic /M) for the weights
     double tstar = -sqrt(sstar)*pstar*(1-cosalpha);
@@ -276,7 +286,7 @@ void ZMC(){
 
     // other kinematic variables to be stored
     // for the partons
-    /*
+    
     double Phi1 = 2. * gPI * gRandom->Uniform(1.) - gPI;
     double Phi2 = 2. * gPI * gRandom->Uniform(1.) - gPI;
 	  
@@ -353,6 +363,9 @@ void ZMC(){
     lepP->Boost(dilep_to_lab);
     lepN->SetPxPyPzE(-lepton_DILEP_xyz.Px(),-lepton_DILEP_xyz.Py(),-lepton_DILEP_xyz.Pz(),lepton_DILEP_xyz.E());
     lepN->Boost(dilep_to_lab);
+
+    muonP = lepP;
+    muonN = lepN;
 
     /////////////////////////////////////////////////////////////////////
     // CS frame
@@ -489,8 +502,7 @@ void ZMC(){
     w_ggHX_lg = 1.5 * ( 1. - costh_ggHX*costh_ggHX );
 
     axAngle = HXaxis.Angle(ggHXaxis);
-    */
-    
+        
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     // define here some "acceptance" cuts to prevent that unused events are stored in the ntuple (storing is much slower than generating)
     
@@ -498,6 +510,7 @@ void ZMC(){
     
     accepted = accepted && (xi > xi_min) && (xi < xi_max) ;
     accepted = accepted && abs(y) < y_max;
+    accepted = accepted && x1 <= 1 && x2 <= 1;
     
     // store in the ntuple:
     
