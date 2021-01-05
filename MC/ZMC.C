@@ -18,7 +18,8 @@
 using namespace LHAPDF;
 using namespace std;
 
-PDF *pdf_ct = mkPDF("CT14nnlo", 0);
+//PDF *pdf_ct = mkPDF("CT14nnlo", 0);
+PDF *pdf_ct = mkPDF("CT14lo", 0);
 
 // how many events to generate. The events will be weighted by the partonic cross section, so many of them will count very little.
 const int n_events = 1e8;
@@ -215,7 +216,9 @@ void ZMC(){
   double x_max = 1.; // is it true that x can always reach 1? CHECK
 
   for( int i_event = 1; i_event <= n_events; i_event++ ){
-    
+
+    if (i_event%n_step == 0) cout << "X" << flush;
+
     // generate
     // sstar from uniform
     sstar = gRandom->Uniform(sstar_min, sstar_max);

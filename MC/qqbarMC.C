@@ -1,5 +1,4 @@
-// code to generate a MC sample for a given state and (beta,rho,delta) set
-// generates both sqrt(s) values 7 and 13 TeV
+// code to generate a quarkonium MC sample for a given state, sqrt(s) and (beta,rho,delta) set
 
 #include "Riostream.h"
 #include "TSystem.h"
@@ -34,6 +33,7 @@ const double M = 3.097; // for the Jpsi
 //const double M = 10.023;  // for the Ups(2S)
 //const double M = 10.355;  // for the Ups(3S)
 
+// generation limits for xi and y
 const double xi_min = 1.;
 const double xi_max = 50.;
 const double y_max = 5.;
@@ -57,7 +57,7 @@ const double gPI = TMath::Pi();
 
 TLorentzVector beam1_LAB, beam2_LAB;
 
-// define the (gluon) PDFs:
+// define the PDFs:
 double func_gluonPDF(double x_gluon, double q2)
 {
   // definition of gluon PDF as a function of x (argument) and Q^2 (parameter 0), with function starting at x_min (parameter 1)
@@ -85,7 +85,7 @@ double func_quarkPDF(double x_quark, double q2)
   return pdf;
 }
 
-// define the partonic cross section (gluon-gluon)
+// define the partonic cross section
 // define as double* x, double* par for any that is used as TF1
 
 // sstar dependent factor
@@ -95,14 +95,14 @@ double func_xsect_sstar( double* x, double* par)
 
   double xs = 0.;
 
-  if ( sstar > sstar_min ) {
-    xs = pow(sstar, -1);
+  if ( sstar > sstar_min && sstar < sstar_max) {
+    xs = pow(sstar, -beta);
   }
 
   return xs;
 }
 
-// costheta dependent factor (with sstar as parameter); better to generate linearly as well
+// costheta dependent factor (with sstar as parameter)
 double xsect_cosa(double cosa, double sstar)
 {
  
@@ -118,6 +118,7 @@ double xsect_cosa(double cosa, double sstar)
   return xc;
 }
 
+// MAIN
 void qqbarMC(){
 
   delete gRandom;
@@ -141,7 +142,7 @@ void qqbarMC(){
 
   double cosalpha_inv, axAngle;
   
-  // weights to be applied to the events when any distribution is plotted (always w_cos, never w_sstar)
+  // weights to be applied to the events when any distribution is plotted
   double jac, w_gg, w_qg, w_cos, w_sstar, pick;
   double w_CS_tr, w_HX_tr, w_PX_tr, w_ggHX_tr;
   double w_CS_lg, w_HX_lg, w_PX_lg, w_ggHX_lg;
@@ -173,7 +174,7 @@ void qqbarMC(){
   qqbar->Branch("cosalpha_inv", &cosalpha_inv, "cosalpha_inv/D");
   qqbar->Branch("axAngle", &axAngle, "axAngle/D");
   
-  // weights to be applied to the events when any distribution is plotted (always w_cos, never w_sstar)
+  // weights to be applied to the events when any distribution is plotted
   qqbar->Branch( "jac",       &jac,       "jac/D"  );
   qqbar->Branch( "w_gg",      &w_gg,      "w_gg/D"  );
   qqbar->Branch( "w_qg",      &w_qg,      "w_qg/D"  );
@@ -198,8 +199,13 @@ void qqbarMC(){
   cout << "Progress: ";
   
   /////////////////// CYCLE OF EVENTS ////////////////////////
-  for( int i_event = 1; i_event <= n_events; i_event++ ){
-    
+  double x_min = sstar_min*M*M / s; // min of the parton fractional momentum; this expression derives from x1*x2 = shat / s and |x| < 1
+  double x_max = 1.; // is it true that x can always reach 1? CHECK
+
+    for( int i_event = 1; i_event <= n_events; i_event++ ){
+
+    if (i_event%n_step == 0) cout << "X" << flush;
+	
     // generate
     // sstar from function
     sstar = xsect_sstar->GetRandom();
@@ -207,8 +213,6 @@ void qqbarMC(){
 
     // random generation of either x1 or x2
     pick = gRandom->Uniform(-1,1);
-    double x_min = s_hat / s; // min of the parton fractional momentum; this expression derives from x1*x2 = shat / s and |x| < 1
-    double x_max = 1.; // is it true that x can always reach 1? CHECK
     if(pick > 0) {
       double logx1 = gRandom->Uniform(log(x_min), log(x_max));
       x1 = exp(logx1);
@@ -220,33 +224,39 @@ void qqbarMC(){
       x1 = s_hat / s / x2;
     }
   
-    // also define cosalpha function and extract;
+    // cosalpha from uniform;
     cosalpha = gRandom->Uniform(-1, 1);
 
     // quarkonium kinematic variables
+    // p, pT, pL, E -> all partonic and /M
     double pstar = (sstar-1)/(2*sqrt(sstar)); 
     pLstar = pstar*cosalpha;
     double Estar = (sstar+1)/(2*sqrt(sstar));
     xi = pstar*sqrt(1-cosalpha*cosalpha);
   
+    // y expressions + pL (pT^hat = pT)
     double y_hat = 0.5*log((Estar + pLstar)/(Estar - pLstar));
     y_gg = 0.5*log(x1/x2);
     y = y_hat + y_gg;
     double pL = sqrt(1+xi*xi)*sinh(y)*M;
+
+    // skip event if outside gen range or unphysical x
+    if(xi < xi_min || xi > xi_max || abs(y) > y_max || x1 > 1 || x2 > 1)
+      continue;
     
     // different weight components
     // to get the right weight for an event apply all weights that count
     // e.g. a gg event with uniformly-generated cosalpha has w = w_gg * w_cos
 
     // dx1 dx2 dt^hat = Jac * dlogx dsstar dcosalpha^hat
-    // Jac = (s^hat - M^2) / (2 s / M^2)
-    jac =  (s_hat - M*M) / ((2.*s)/(M*M)) ;
+    //jac =  (s_hat - M*M) / ((2.*s)/(M*M)) ;
+    jac = 1./s;
     w_gg = func_gluonPDF( x2, s_hat ) * func_gluonPDF( x1, s_hat );
     w_qg = func_quarkPDF( x2, s_hat ) * func_gluonPDF( x1, s_hat );
 
     w_cos = xsect_cosa(cosalpha, sstar);
-    w_sstar = pow(sstar, -beta); // beta is here, sstar generated with power -1 
-
+    w_sstar = xsect_sstar->Eval(sstar);
+    
     // other kinematic variables to be stored for the partons
     double Phi1 = 2. * gPI * gRandom->Uniform(1.) - gPI;
     double Phi2 = 2. * gPI * gRandom->Uniform(1.) - gPI;
@@ -475,7 +485,6 @@ void qqbarMC(){
       qqbar->Fill();
     
     
-    if (i_event%n_step == 0) cout << "X" << flush;
   
   } // end of generation loop
 

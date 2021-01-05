@@ -206,7 +206,9 @@ void gammaMC_pT(){
   
   /////////////////// CYCLE OF EVENTS ////////////////////////
   for( int i_event = 1; i_event <= n_events; i_event++ ){
-    
+
+    if (i_event%n_step == 0) cout << "X" << flush;
+
     // generate
     // pT, y, cosalpha from uniform
     pt = gRandom->Uniform(pt_min, pt_max);
@@ -225,6 +227,9 @@ void gammaMC_pT(){
     x2 = sqrt(shat)/sqrts*exp(-y_gg);
     
     double pL = pt*sinh(y);
+
+    if(sstar < sstar_min || sstar > sstar_max || x1 > 1 || x2 > 1)
+      continue;
     
     // u and t variables (partonic /M) for the weights
     double that = -sqrt(shat)*phat*(1-cosalpha);
@@ -484,7 +489,6 @@ void gammaMC_pT(){
     if ( accepted )
       gamma->Fill();
     
-    if (i_event%n_step == 0) cout << "X" << flush;
     
   } // end of generation loop
   

@@ -208,7 +208,9 @@ void gammaMC(){
   
   /////////////////// CYCLE OF EVENTS ////////////////////////
   for( int i_event = 1; i_event <= n_events; i_event++ ){
-    
+
+    if (i_event%n_step == 0) cout << "X" << flush;
+
     // generate
     // shat from uniform
     shat = gRandom->Uniform(shat_min, shat_max);
@@ -245,7 +247,10 @@ void gammaMC(){
     y_gg = 0.5*log(x1/x2);
     y = y_hat + y_gg;
     double pL=pt*sinh(y);
-   
+
+    if(xi < xi_min || xi > xi_max || abs(y) > y_max || x1 > 1 || x2 > 1)
+      continue;
+
     // u and t variables (partonic /M) for the weights
     double that = -sqrt(shat)*phat*(1-cosalpha);
     double uhat = -sqrt(shat)*phat*(1+cosalpha);
@@ -505,7 +510,6 @@ void gammaMC(){
       gamma->Fill();
  
     
-    if (i_event%n_step == 0) cout << "X" << flush;
     
   } // end of generation loop
   

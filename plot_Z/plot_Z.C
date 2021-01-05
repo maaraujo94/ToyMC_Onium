@@ -35,7 +35,7 @@ void plot_Z()
   // part 1 : variables to be changed on each run
 
   // type of MC files
-  string type = "ZMC_muon/";
+  string type = "ZMC_LO/";
 
   // choose sqrt(s) we're plotting
   const int nsqs = 2;

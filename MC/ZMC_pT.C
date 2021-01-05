@@ -206,7 +206,9 @@ void ZMC_pT(){
   
   /////////////////// CYCLE OF EVENTS ////////////////////////
   for( int i_event = 1; i_event <= n_events; i_event++ ){
-    
+
+    if (i_event%n_step == 0) cout << "X" << flush;
+
     // generate
     // pT, y, cosalpha from uniform
     double pT = gRandom->Uniform(xi_min*M, xi_max*M);
@@ -228,6 +230,9 @@ void ZMC_pT(){
 
     double pL = sqrt(1+xi*xi)*sinh(y)*M;
     
+    if(sstar < sstar_min || sstar > sstar_max || x1 > 1 || x2 > 1)
+      continue;
+
     // u and t variables (partonic /M) for the weights
     double tstar = -sqrt(sstar)*pstar*(1-cosalpha);
     double ustar = -sqrt(sstar)*pstar*(1+cosalpha);
@@ -487,7 +492,6 @@ void ZMC_pT(){
     if ( accepted )
       zbar->Fill();
     
-    if (i_event%n_step == 0) cout << "X" << flush;
     
   } // end of generation loop
   
