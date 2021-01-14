@@ -42,7 +42,7 @@ void xi_Z_8_A(TGraphAsymmErrors ***g, TH1F ***h)
       bins[j] = nums[3]/mass;
       if(j == n_pts-1) bins[j+1] = nums[4]/mass;
 
-      double signorm = 2.*(nums[1]-nums[0]);
+      double signorm = (nums[1]-nums[0]);
       sig[j] = nums[5]/(signorm);
       dsig_hi[j] = sqrt(nums[6]*nums[6]+nums[8]*nums[8])/(signorm);
       dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])/(signorm);

@@ -35,7 +35,7 @@ void plot_Z()
   // part 1 : variables to be changed on each run
 
   // type of MC files
-  string type = "ZMC_LO/";
+  string type = "ZMC_LO_pT/";
 
   // choose sqrt(s) we're plotting
   const int nsqs = 2;
@@ -44,7 +44,7 @@ void plot_Z()
   
   double xi_bin_width = 0.1;   // constant for easier normalization
   
-  double normfactor[nsqs] = {2e9, 2e9}; // same for all y and sqrt(s)
+  double normfactor[nsqs] = {1.5e9, 1.5e9}; // same for all y and sqrt(s)
   
   // data TGraphs (xi and y dists)
   TGraphAsymmErrors ***xi_g_A = new TGraphAsymmErrors**[nsqs];
@@ -271,7 +271,7 @@ void plot_Z()
       xi_h_A[is][j_y]->SetStats(0);
       xi_h_A[is][j_y]->SetLineColor(1);
       xi_h_A[is][j_y]->Draw("hist same");
-      xi_h_A[is][j_y]->Draw("error same");
+      //xi_h_A[is][j_y]->Draw("error same");
       
       //save in ROOT fle
       xi_g_A[is][j_y]->SetName(Form("%s_g", xi_h_A[is][j_y]->GetTitle()));
@@ -283,7 +283,7 @@ void plot_Z()
       // draw data graph
       xi_g_A[is][j_y]->SetMarkerStyle(20);
       xi_g_A[is][j_y]->SetMarkerSize(.75);
-      xi_g_A[is][j_y]->Draw("p");
+      xi_g_A[is][j_y]->Draw("p same");
       // save in ROOT file
       xi_g_A[is][j_y]->SetTitle(Form("%s TeV ATLAS %.1f < y < %.1f", sqsNames[is].c_str(), ym, yM));
       xi_g_A[is][j_y]->Write();
@@ -319,7 +319,7 @@ void plot_Z()
       xi_h_C[is][j_y]->SetStats(0);
       xi_h_C[is][j_y]->SetLineColor(1);
       xi_h_C[is][j_y]->Draw("hist same");
-      xi_h_C[is][j_y]->Draw("error same");
+      //xi_h_C[is][j_y]->Draw("error same");
       
       //save in ROOT fle
       xi_g_C[is][j_y]->SetName(Form("%s_g", xi_h_C[is][j_y]->GetTitle()));
@@ -331,7 +331,7 @@ void plot_Z()
       // draw data graph
       xi_g_C[is][j_y]->SetMarkerStyle(20);
       xi_g_C[is][j_y]->SetMarkerSize(.75);
-      xi_g_C[is][j_y]->Draw("p");
+      xi_g_C[is][j_y]->Draw("p same");
       // save in ROOT file
       xi_g_C[is][j_y]->SetTitle(Form("%s TeV CMS %.1f < y < %.1f", sqsNames[is].c_str(), ym, yM));
       xi_g_C[is][j_y]->Write();

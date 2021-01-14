@@ -19,19 +19,19 @@
 using namespace LHAPDF;
 using namespace std;
 
-PDF *pdf_ct = mkPDF("CT14nnlo", 0);
+PDF *pdf_ct = mkPDF("CT14lo", 0);
 
 // how many events to generate. The events will be weighted by the partonic cross section, so many of them will count very little.
-const int n_events = 1e7;
+const int n_events = 1e8;
 //const int n_events = 1e3;
 
-double sqrts = 7000;  // write here collision energy in GeV
+double sqrts = 8000;  // write here collision energy in GeV
 double s = sqrts*sqrts;
 
 const double M = 91.1876;
 
 const double xi_min = 0.;
-const double xi_max = 40.;
+const double xi_max = 50.;
 const double y_max = 5.;
 
 const double sstar_min = pow( xi_min + sqrt(1. + xi_min*xi_min), 2.);
@@ -141,6 +141,8 @@ void ZMC_pT(){
 
   //defining the parameters to be used here
   double x1, x2, y, y_gg, sstar, cosalpha, pLstar, xi;
+  TLorentzVector *muonP = 0; // storing dimuons
+  TLorentzVector *muonN = 0;
   
   double costh_CS, phi_CS, phith_CS;
   double costh_HX, phi_HX, phith_HX;
@@ -165,21 +167,24 @@ void ZMC_pT(){
   zbar->Branch( "y",        &y,        "y/D"  );
   zbar->Branch( "y_gg",     &y_gg,     "y_gg/D"  );
 
-  /*    zbar->Branch("costh_CS",   &costh_CS,   "costh_CS/D");
-	zbar->Branch("phi_CS",     &phi_CS,     "phi_CS/D"  );
-	zbar->Branch("phith_CS",   &phith_CS,   "phith_CS/D");
-	zbar->Branch("costh_HX",   &costh_HX,   "costh_HX/D");
-	zbar->Branch("phi_HX",     &phi_HX,     "phi_HX/D"  );
-	zbar->Branch("phith_HX",   &phith_HX,   "phith_HX/D");
-	zbar->Branch("costh_PX",   &costh_PX,   "costh_PX/D");
-	zbar->Branch("phi_PX",     &phi_PX,     "phi_PX/D"  );
-	zbar->Branch("phith_PX",   &phith_PX,   "phith_PX/D");
-	zbar->Branch("costh_ggHX", &costh_ggHX, "costh_ggHX/D");
-	zbar->Branch("phi_ggHX",   &phi_ggHX,   "phi_ggHX/D"  );
-	zbar->Branch("phith_ggHX", &phith_ggHX, "phith_ggHX/D");
+  zbar->Branch("muonP", &muonP);
+  zbar->Branch("muonN", &muonN);
+  
+  zbar->Branch("costh_CS",   &costh_CS,   "costh_CS/D");
+  zbar->Branch("phi_CS",     &phi_CS,     "phi_CS/D"  );
+  zbar->Branch("phith_CS",   &phith_CS,   "phith_CS/D");
+  zbar->Branch("costh_HX",   &costh_HX,   "costh_HX/D");
+  zbar->Branch("phi_HX",     &phi_HX,     "phi_HX/D"  );
+  zbar->Branch("phith_HX",   &phith_HX,   "phith_HX/D");
+  zbar->Branch("costh_PX",   &costh_PX,   "costh_PX/D");
+  zbar->Branch("phi_PX",     &phi_PX,     "phi_PX/D"  );
+  zbar->Branch("phith_PX",   &phith_PX,   "phith_PX/D");
+  zbar->Branch("costh_ggHX", &costh_ggHX, "costh_ggHX/D");
+  zbar->Branch("phi_ggHX",   &phi_ggHX,   "phi_ggHX/D"  );
+  zbar->Branch("phith_ggHX", &phith_ggHX, "phith_ggHX/D");
 
-	zbar->Branch("cosalpha_inv", &cosalpha_inv, "cosalpha_inv/D");
-	zbar->Branch("axAngle", &axAngle, "axAngle/D");*/
+  zbar->Branch("cosalpha_inv", &cosalpha_inv, "cosalpha_inv/D");
+  zbar->Branch("axAngle", &axAngle, "axAngle/D");
   
   // weights to be applied to the events when any distribution is plotted (always w_cos, never w_sstar)
   zbar->Branch( "jac",       &jac,       "jac/D"  );
@@ -189,14 +194,14 @@ void ZMC_pT(){
   zbar->Branch( "w_dg",      &w_dg,      "w_dg/D"  );
   zbar->Branch( "w_ubg",     &w_ubg,     "w_ubg/D"  );
   zbar->Branch( "w_dbg",     &w_dbg,     "w_dbg/D"  );
-  /*    zbar->Branch( "w_CS_tr",   &w_CS_tr,   "w_CS_tr/D"  );
-	zbar->Branch( "w_HX_tr",   &w_HX_tr,   "w_HX_tr/D"  );
-	zbar->Branch( "w_PX_tr",   &w_PX_tr,   "w_PX_tr/D"  );
-	zbar->Branch( "w_ggHX_tr", &w_ggHX_tr, "w_ggHX_tr/D"  );
-	zbar->Branch( "w_CS_lg",   &w_CS_lg,   "w_CS_lg/D"  );
-	zbar->Branch( "w_HX_lg",   &w_HX_lg,   "w_HX_lg/D"  );
-	zbar->Branch( "w_PX_lg",   &w_PX_lg,   "w_PX_lg/D"  );
-	zbar->Branch( "w_ggHX_lg", &w_ggHX_lg, "w_ggHX_lg/D"  );*/
+  zbar->Branch( "w_CS_tr",   &w_CS_tr,   "w_CS_tr/D"  );
+  zbar->Branch( "w_HX_tr",   &w_HX_tr,   "w_HX_tr/D"  );
+  zbar->Branch( "w_PX_tr",   &w_PX_tr,   "w_PX_tr/D"  );
+  zbar->Branch( "w_ggHX_tr", &w_ggHX_tr, "w_ggHX_tr/D"  );
+  zbar->Branch( "w_CS_lg",   &w_CS_lg,   "w_CS_lg/D"  );
+  zbar->Branch( "w_HX_lg",   &w_HX_lg,   "w_HX_lg/D"  );
+  zbar->Branch( "w_PX_lg",   &w_PX_lg,   "w_PX_lg/D"  );
+  zbar->Branch( "w_ggHX_lg", &w_ggHX_lg, "w_ggHX_lg/D"  );
   
   // counter to show progress of the generation
   const int n_step = n_events/50;
@@ -264,233 +269,235 @@ void ZMC_pT(){
 
     // other kinematic variables to be stored
     // for the partons
-    /*    
-	  double Phi1 = 2. * gPI * gRandom->Uniform(1.) - gPI;
-	  double Phi2 = 2. * gPI * gRandom->Uniform(1.) - gPI;
-	  
-	  double kT1 = abs(gRandom->Gaus(0, avgkT2));
-	  double kT2 = abs(gRandom->Gaus(0, avgkT2));
-	  
-	  TLorentzVector parton1_LAB, parton2_LAB;
-	  
-	  parton1_LAB.SetPxPyPzE( kT1 * cos(Phi1), kT1 * sin(Phi1), pbeam*x1, sqrt(kT1*kT1 + pbeam*x1*pbeam*x1) );
-	  parton2_LAB.SetPxPyPzE( kT2 * cos(Phi2), kT2 * sin(Phi2), -pbeam*x2, sqrt(kT2*kT2 + pbeam*x2*pbeam*x2) );  
-	  
-	  //polarization part
-	  //generate decay angles
-	  double costh_gen;
-	  double sinth_gen;
-	  double phi_gen;
-
-	  costh_gen = -1. + 2. * gRandom->Uniform(1.);
-	  sinth_gen = sqrt(1-costh_gen*costh_gen);
-	  phi_gen   = 2. * gPI * gRandom->Uniform(1.);
-
-	  //dilepton in lab frame
-	  double Phi = 2. * gPI * gRandom->Uniform(1.) - gPI;
-
-	  // get angles in each frame
-	  TLorentzVector dilepton;
-	  dilepton.SetXYZM( xi*M * cos(Phi) , xi*M * sin(Phi), pL, M );
-
-	  //lepton in dilepton rest frame
-	  double p_lepton_DILEP = sqrt( 0.25*M*M - Mlepton*Mlepton );
-
-	  TLorentzVector lepton_DILEP;
-	
-	  lepton_DILEP.SetXYZM( p_lepton_DILEP * sinth_gen * cos(phi_gen),
-	  p_lepton_DILEP * sinth_gen * sin(phi_gen),
-	  p_lepton_DILEP * costh_gen,
-	  Mlepton );
-	
-	  // reference directions to calculate angles:
-	
-	  TVector3 lab_to_dilep = -dilepton.BoostVector();
-	
-	  TLorentzVector beam1_DILEP = beam1_LAB;
-	  beam1_DILEP.Boost(lab_to_dilep);         // beam1 in the dilepton rest frame
-	  TLorentzVector beam2_DILEP = beam2_LAB;
-	  beam2_DILEP.Boost(lab_to_dilep);         // beam2 in the dilepton rest frame
-
-	  TVector3 beam1_direction     = beam1_DILEP.Vect().Unit();
-	  TVector3 beam2_direction     = beam2_DILEP.Vect().Unit();
-	  TVector3 dilep_direction     = dilepton.Vect().Unit();
-	  TVector3 beam1_beam2_bisect  = ( beam1_direction - beam2_direction ).Unit();
-	
-	  // all polarization frames have the same Y axis = the normal to the plane formed by
-	  // the directions of the colliding hadrons
-	
-	  TVector3 Yaxis = ( beam1_direction.Cross( beam2_direction ) ).Unit();
-
-	  // flip of y axis with rapidity
-	
-	  if ( y < 0 ) Yaxis = - Yaxis;
-
-	  TVector3 perpendicular_to_beam = ( beam1_beam2_bisect.Cross( Yaxis ) ).Unit();
-
-	  TLorentzVector lepton_DILEP_xyz = lepton_DILEP;
-
-	  // lepton 4-vectors in the LAB frame: CHECK FOR BUGS
-
-	  TVector3 dilep_to_lab = dilepton.BoostVector();
-
-	  TLorentzVector* lepP = new TLorentzVector(0.,0.,0.,0.);
-	  TLorentzVector* lepN = new TLorentzVector(0.,0.,0.,0.);
-
-	  *lepP = lepton_DILEP_xyz;
-	  lepP->Boost(dilep_to_lab);
-	  lepN->SetPxPyPzE(-lepton_DILEP_xyz.Px(),-lepton_DILEP_xyz.Py(),-lepton_DILEP_xyz.Pz(),lepton_DILEP_xyz.E());
-	  lepN->Boost(dilep_to_lab);
-
-	  /////////////////////////////////////////////////////////////////////
-	  // CS frame
-	
-	  TRotation rotation;
-	
-	  TVector3 newZaxis = beam1_beam2_bisect;
-	  TVector3 newYaxis = Yaxis;
-	  TVector3 newXaxis = newYaxis.Cross( newZaxis );
-	
-	  rotation.SetToIdentity();
-	  rotation.RotateAxes( newXaxis, newYaxis, newZaxis );
-	  rotation.Invert();  // transforms coordinates from the "xyz" frame to the new frame
-
-	  TVector3 lepton_DILEP_rotated = lepton_DILEP_xyz.Vect();
-
-	  lepton_DILEP_rotated.Transform(rotation);
-
-	  costh_CS = lepton_DILEP_rotated.CosTheta();
-
-	  phi_CS = lepton_DILEP_rotated.Phi() * 180. / gPI;
-
-	  if ( costh_CS < 0. ) phith_CS = phi_CS - 135.;
-	  if ( costh_CS > 0. ) phith_CS = phi_CS - 45.;
-	
-	  if ( phith_CS < -180. ) phith_CS = 360. + phith_CS;
-
-
-	  /////////////////////////////////////////////////////////////////////
-	  // HELICITY frame
-
-	  newZaxis = dilep_direction;
-	  TVector3 HXaxis = newZaxis;
-	  newYaxis = Yaxis;
-	  newXaxis = newYaxis.Cross( newZaxis );
-
-	  rotation.SetToIdentity();
-	  rotation.RotateAxes( newXaxis, newYaxis, newZaxis );
-	  rotation.Invert();
-
-	  lepton_DILEP_rotated = lepton_DILEP_xyz.Vect();
-	
-	  lepton_DILEP_rotated.Transform(rotation);
-
-	  costh_HX = lepton_DILEP_rotated.CosTheta();
-
-	  phi_HX = lepton_DILEP_rotated.Phi() * 180. / gPI;
-
-	  if ( costh_HX < 0. ) phith_HX = phi_HX - 135.;
-	  if ( costh_HX > 0. ) phith_HX = phi_HX - 45.;
-
-	  if ( phith_HX < -180. ) phith_HX = 360. + phith_HX;
-    
-	
-	  /////////////////////////////////////////////////////////////////////
-	  // PERPENDICULAR HELICITY frame
-
-	  newZaxis = perpendicular_to_beam;
-	  newYaxis = Yaxis;
-	  newXaxis = newYaxis.Cross( newZaxis );
-
-	  rotation.SetToIdentity();
-	  rotation.RotateAxes( newXaxis, newYaxis, newZaxis );
-	  rotation.Invert();
-
-	  lepton_DILEP_rotated = lepton_DILEP_xyz.Vect();
-	
-	  lepton_DILEP_rotated.Transform(rotation);
-	
-	  costh_PX = lepton_DILEP_rotated.CosTheta();
-
-	  phi_PX = lepton_DILEP_rotated.Phi() * 180. / gPI;
-
-	  if ( costh_PX < 0. ) phith_PX = phi_PX - 135.;
-	  if ( costh_PX > 0. ) phith_PX = phi_PX - 45.;
-
-	  if ( phith_PX < -180. ) phith_PX = 360. + phith_PX;
-
-	  //invariant cosalpha
-
-	  cosalpha_inv = sqrt( 1. - pow(costh_PX, 2.) ) * sin( lepton_DILEP_rotated.Phi() );
-
-	  //////////////////////////////////////////////////////
-	  // diparton helicity frame
-
-	  TLorentzVector diparton = parton1_LAB+parton2_LAB;
-	  TVector3 lab_to_diptn = -diparton.BoostVector();
-
-	  TLorentzVector parton1_DILEP = parton1_LAB;
-	  parton1_DILEP.Boost(lab_to_dilep);         // parton1 in the dilepton rest frame
-	  TLorentzVector parton2_DILEP = parton2_LAB;
-	  parton2_DILEP.Boost(lab_to_dilep);         // parton2 in the dilepton rest frame
-	  TLorentzVector diparton_DILEP = parton1_DILEP + parton2_DILEP;
-	  TLorentzVector qkn_diptn = dilepton;
-	  dilepton.Boost(lab_to_diptn);
-    
-	  TVector3 parton1_direction     = parton1_DILEP.Vect().Unit();
-	  TVector3 parton2_direction     = parton2_DILEP.Vect().Unit();
-	  TVector3 dilep_direction_parton = -diparton_DILEP.Vect().Unit();
-	  TVector3 Yaxis_ptn = ( parton1_direction.Cross( parton2_direction ) ).Unit();
-	  if ( (y-y_gg) < 0 ) Yaxis_ptn = - Yaxis_ptn;
-
-	  newZaxis = dilep_direction_parton;
-	  TVector3 ggHXaxis = newZaxis;
-	  newYaxis = Yaxis_ptn;
-	  newXaxis = newYaxis.Cross( newZaxis );
-
-	  rotation.SetToIdentity();
-	  rotation.RotateAxes( newXaxis, newYaxis, newZaxis );
-	  rotation.Invert();
-
-	  lepton_DILEP_rotated = lepton_DILEP_xyz.Vect();
-	
-	  lepton_DILEP_rotated.Transform(rotation);
-
-	  costh_ggHX = lepton_DILEP_rotated.CosTheta();
-
-	  phi_ggHX = lepton_DILEP_rotated.Phi() * 180. / gPI;
-
-	  if ( costh_ggHX < 0. ) phith_ggHX = phi_ggHX - 135.;
-	  if ( costh_ggHX > 0. ) phith_ggHX = phi_ggHX - 45.;
-	
-	  if ( phith_ggHX < -180. ) phith_ggHX = 360. + phith_ggHX;
-
-	  //weights
-	
-	  w_HX_tr = 0.75 * ( 1. + costh_HX*costh_HX );
-	  w_HX_lg = 1.5 * ( 1. - costh_HX*costh_HX );
-	  w_CS_tr = 0.75 * ( 1. + costh_CS*costh_CS );
-	  w_CS_lg = 1.5 * ( 1. - costh_CS*costh_CS );
-	  w_PX_tr = 0.75 * ( 1. + costh_PX*costh_PX );
-	  w_PX_lg = 1.5 * ( 1. - costh_PX*costh_PX );
-	  w_ggHX_tr = 0.75 * ( 1. + costh_ggHX*costh_ggHX );
-	  w_ggHX_lg = 1.5 * ( 1. - costh_ggHX*costh_ggHX );
-
-	  axAngle = HXaxis.Angle(ggHXaxis);
-	  */
-    
-    //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    // define here some "acceptance" cuts to prevent that unused events are stored in the ntuple (storing is much slower than generating)
-    
-    
-    bool accepted = true;
-    accepted = accepted && (sstar > sstar_min) && (sstar < sstar_max) ;
-    accepted = accepted && (x1 > s_hat/s) && (x2 > s_hat/s) && (x1 < 1.) && (x2 < 1.);
       
-    // store in the ntuple:
+    double Phi1 = 2. * gPI * gRandom->Uniform(1.) - gPI;
+    double Phi2 = 2. * gPI * gRandom->Uniform(1.) - gPI;
+	  
+    double kT1 = abs(gRandom->Gaus(0, avgkT2));
+    double kT2 = abs(gRandom->Gaus(0, avgkT2));
+	  
+    TLorentzVector parton1_LAB, parton2_LAB;
+	  
+    parton1_LAB.SetPxPyPzE( kT1 * cos(Phi1), kT1 * sin(Phi1), pbeam*x1, sqrt(kT1*kT1 + pbeam*x1*pbeam*x1) );
+    parton2_LAB.SetPxPyPzE( kT2 * cos(Phi2), kT2 * sin(Phi2), -pbeam*x2, sqrt(kT2*kT2 + pbeam*x2*pbeam*x2) );  
+	  
+    //polarization part
+    //generate decay angles
+    double costh_gen;
+    double sinth_gen;
+    double phi_gen;
+
+    costh_gen = -1. + 2. * gRandom->Uniform(1.);
+    sinth_gen = sqrt(1-costh_gen*costh_gen);
+    phi_gen   = 2. * gPI * gRandom->Uniform(1.);
+
+    //dilepton in lab frame
+    double Phi = 2. * gPI * gRandom->Uniform(1.) - gPI;
+
+    // get angles in each frame
+    TLorentzVector dilepton;
+    dilepton.SetXYZM( xi*M * cos(Phi) , xi*M * sin(Phi), pL, M );
+
+    //lepton in dilepton rest frame
+    double p_lepton_DILEP = sqrt( 0.25*M*M - Mlepton*Mlepton );
+
+    TLorentzVector lepton_DILEP;
+	
+    lepton_DILEP.SetXYZM( p_lepton_DILEP * sinth_gen * cos(phi_gen),
+			  p_lepton_DILEP * sinth_gen * sin(phi_gen),
+			  p_lepton_DILEP * costh_gen,
+			  Mlepton );
+	
+    // reference directions to calculate angles:
+	
+    TVector3 lab_to_dilep = -dilepton.BoostVector();
+	
+    TLorentzVector beam1_DILEP = beam1_LAB;
+    beam1_DILEP.Boost(lab_to_dilep);         // beam1 in the dilepton rest frame
+    TLorentzVector beam2_DILEP = beam2_LAB;
+    beam2_DILEP.Boost(lab_to_dilep);         // beam2 in the dilepton rest frame
+
+    TVector3 beam1_direction     = beam1_DILEP.Vect().Unit();
+    TVector3 beam2_direction     = beam2_DILEP.Vect().Unit();
+    TVector3 dilep_direction     = dilepton.Vect().Unit();
+    TVector3 beam1_beam2_bisect  = ( beam1_direction - beam2_direction ).Unit();
+	
+    // all polarization frames have the same Y axis = the normal to the plane formed by
+    // the directions of the colliding hadrons
+	
+    TVector3 Yaxis = ( beam1_direction.Cross( beam2_direction ) ).Unit();
+
+    // flip of y axis with rapidity
+	
+    if ( y < 0 ) Yaxis = - Yaxis;
+
+    TVector3 perpendicular_to_beam = ( beam1_beam2_bisect.Cross( Yaxis ) ).Unit();
+
+    TLorentzVector lepton_DILEP_xyz = lepton_DILEP;
+
+    // lepton 4-vectors in the LAB frame: CHECK FOR BUGS
+
+    TVector3 dilep_to_lab = dilepton.BoostVector();
+
+    TLorentzVector* lepP = new TLorentzVector(0.,0.,0.,0.);
+    TLorentzVector* lepN = new TLorentzVector(0.,0.,0.,0.);
+
+    *lepP = lepton_DILEP_xyz;
+    lepP->Boost(dilep_to_lab);
+    lepN->SetPxPyPzE(-lepton_DILEP_xyz.Px(),-lepton_DILEP_xyz.Py(),-lepton_DILEP_xyz.Pz(),lepton_DILEP_xyz.E());
+    lepN->Boost(dilep_to_lab);
+
+    muonP = lepP;
+    muonN = lepN;
+
+    /////////////////////////////////////////////////////////////////////
+    // CS frame
+	
+    TRotation rotation;
+	
+    TVector3 newZaxis = beam1_beam2_bisect;
+    TVector3 newYaxis = Yaxis;
+    TVector3 newXaxis = newYaxis.Cross( newZaxis );
+	
+    rotation.SetToIdentity();
+    rotation.RotateAxes( newXaxis, newYaxis, newZaxis );
+    rotation.Invert();  // transforms coordinates from the "xyz" frame to the new frame
+
+    TVector3 lepton_DILEP_rotated = lepton_DILEP_xyz.Vect();
+
+    lepton_DILEP_rotated.Transform(rotation);
+
+    costh_CS = lepton_DILEP_rotated.CosTheta();
+
+    phi_CS = lepton_DILEP_rotated.Phi() * 180. / gPI;
+
+    if ( costh_CS < 0. ) phith_CS = phi_CS - 135.;
+    if ( costh_CS > 0. ) phith_CS = phi_CS - 45.;
+	
+    if ( phith_CS < -180. ) phith_CS = 360. + phith_CS;
+
+
+    /////////////////////////////////////////////////////////////////////
+    // HELICITY frame
+
+    newZaxis = dilep_direction;
+    TVector3 HXaxis = newZaxis;
+    newYaxis = Yaxis;
+    newXaxis = newYaxis.Cross( newZaxis );
+
+    rotation.SetToIdentity();
+    rotation.RotateAxes( newXaxis, newYaxis, newZaxis );
+    rotation.Invert();
+
+    lepton_DILEP_rotated = lepton_DILEP_xyz.Vect();
+	
+    lepton_DILEP_rotated.Transform(rotation);
+
+    costh_HX = lepton_DILEP_rotated.CosTheta();
+
+    phi_HX = lepton_DILEP_rotated.Phi() * 180. / gPI;
+
+    if ( costh_HX < 0. ) phith_HX = phi_HX - 135.;
+    if ( costh_HX > 0. ) phith_HX = phi_HX - 45.;
+
+    if ( phith_HX < -180. ) phith_HX = 360. + phith_HX;
     
-    if ( accepted )
-      zbar->Fill();
+	
+    /////////////////////////////////////////////////////////////////////
+    // PERPENDICULAR HELICITY frame
+
+    newZaxis = perpendicular_to_beam;
+    newYaxis = Yaxis;
+    newXaxis = newYaxis.Cross( newZaxis );
+
+    rotation.SetToIdentity();
+    rotation.RotateAxes( newXaxis, newYaxis, newZaxis );
+    rotation.Invert();
+
+    lepton_DILEP_rotated = lepton_DILEP_xyz.Vect();
+	
+    lepton_DILEP_rotated.Transform(rotation);
+	
+    costh_PX = lepton_DILEP_rotated.CosTheta();
+
+    phi_PX = lepton_DILEP_rotated.Phi() * 180. / gPI;
+
+    if ( costh_PX < 0. ) phith_PX = phi_PX - 135.;
+    if ( costh_PX > 0. ) phith_PX = phi_PX - 45.;
+
+    if ( phith_PX < -180. ) phith_PX = 360. + phith_PX;
+
+    //invariant cosalpha
+
+    cosalpha_inv = sqrt( 1. - pow(costh_PX, 2.) ) * sin( lepton_DILEP_rotated.Phi() );
+
+    //////////////////////////////////////////////////////
+    // diparton helicity frame
+
+    TLorentzVector diparton = parton1_LAB+parton2_LAB;
+    TVector3 lab_to_diptn = -diparton.BoostVector();
+
+    TLorentzVector parton1_DILEP = parton1_LAB;
+    parton1_DILEP.Boost(lab_to_dilep);         // parton1 in the dilepton rest frame
+    TLorentzVector parton2_DILEP = parton2_LAB;
+    parton2_DILEP.Boost(lab_to_dilep);         // parton2 in the dilepton rest frame
+    TLorentzVector diparton_DILEP = parton1_DILEP + parton2_DILEP;
+    TLorentzVector qkn_diptn = dilepton;
+    dilepton.Boost(lab_to_diptn);
+    
+    TVector3 parton1_direction     = parton1_DILEP.Vect().Unit();
+    TVector3 parton2_direction     = parton2_DILEP.Vect().Unit();
+    TVector3 dilep_direction_parton = -diparton_DILEP.Vect().Unit();
+    TVector3 Yaxis_ptn = ( parton1_direction.Cross( parton2_direction ) ).Unit();
+    if ( (y-y_gg) < 0 ) Yaxis_ptn = - Yaxis_ptn;
+
+    newZaxis = dilep_direction_parton;
+    TVector3 ggHXaxis = newZaxis;
+    newYaxis = Yaxis_ptn;
+    newXaxis = newYaxis.Cross( newZaxis );
+
+    rotation.SetToIdentity();
+    rotation.RotateAxes( newXaxis, newYaxis, newZaxis );
+    rotation.Invert();
+
+    lepton_DILEP_rotated = lepton_DILEP_xyz.Vect();
+	
+    lepton_DILEP_rotated.Transform(rotation);
+
+    costh_ggHX = lepton_DILEP_rotated.CosTheta();
+
+    phi_ggHX = lepton_DILEP_rotated.Phi() * 180. / gPI;
+
+    if ( costh_ggHX < 0. ) phith_ggHX = phi_ggHX - 135.;
+    if ( costh_ggHX > 0. ) phith_ggHX = phi_ggHX - 45.;
+	
+    if ( phith_ggHX < -180. ) phith_ggHX = 360. + phith_ggHX;
+
+    //weights
+	
+    w_HX_tr = 0.75 * ( 1. + costh_HX*costh_HX );
+    w_HX_lg = 1.5 * ( 1. - costh_HX*costh_HX );
+    w_CS_tr = 0.75 * ( 1. + costh_CS*costh_CS );
+    w_CS_lg = 1.5 * ( 1. - costh_CS*costh_CS );
+    w_PX_tr = 0.75 * ( 1. + costh_PX*costh_PX );
+    w_PX_lg = 1.5 * ( 1. - costh_PX*costh_PX );
+    w_ggHX_tr = 0.75 * ( 1. + costh_ggHX*costh_ggHX );
+    w_ggHX_lg = 1.5 * ( 1. - costh_ggHX*costh_ggHX );
+
+    axAngle = HXaxis.Angle(ggHXaxis);
+    
+      //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+      // define here some "acceptance" cuts to prevent that unused events are stored in the ntuple (storing is much slower than generating)
+    
+    
+      bool accepted = true;
+      accepted = accepted && (sstar > sstar_min) && (sstar < sstar_max) ;
+      accepted = accepted && (x1 > s_hat/s) && (x2 > s_hat/s) && (x1 < 1.) && (x2 < 1.);
+      
+      // store in the ntuple:
+    
+      if ( accepted )
+	zbar->Fill();
     
     
   } // end of generation loop
