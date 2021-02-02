@@ -25,14 +25,14 @@ PDF *pdf_ct = mkPDF("CT14lo", 0);
 const int n_events = 1e8;
 //const int n_events = 1e3;
 
-double sqrts = 8000;  // write here collision energy in GeV
+double sqrts = 16000;  // write here collision energy in GeV
 double s = sqrts*sqrts;
 
 const double M = 91.1876;
 
-const double xi_min = 0.;
-const double xi_max = 50.;
-const double y_max = 5.;
+const double xi_min = 0.1;
+const double xi_max = 40.;
+const double y_max = 4.;
 
 const double sstar_min = pow( xi_min + sqrt(1. + xi_min*xi_min), 2.);
 const double sstar_max = s/(M*M);
@@ -251,20 +251,26 @@ void ZMC_pT(){
     jac =  (x1*x2 / pT) * pstar/Estar * (s_hat - M*M) ;
       
     // the PDFs for the partons are symmetrized in x1, x2
-    double uubx = 0.5*(func_upquarkPDF(x1, s_hat)*func_upaquarkPDF(x2, s_hat)+func_upaquarkPDF(x1, s_hat)*func_upquarkPDF(x2, s_hat));
-    double ddbx = 0.5*(func_downquarkPDF(x1, s_hat)*func_downaquarkPDF(x2, s_hat)+func_downaquarkPDF(x1, s_hat)*func_downquarkPDF(x2, s_hat));
-    double ugx = 0.5*(func_upquarkPDF(x1, s_hat)*func_gluonPDF(x2, s_hat)+func_gluonPDF(x1, s_hat)*func_upquarkPDF(x2, s_hat));
-    double dgx = 0.5*(func_downquarkPDF(x1, s_hat)*func_gluonPDF(x2, s_hat)+func_gluonPDF(x1, s_hat)*func_downquarkPDF(x2, s_hat));
-    double ubgx = 0.5*(func_upaquarkPDF(x1, s_hat)*func_gluonPDF(x2, s_hat)+func_gluonPDF(x1, s_hat)*func_upaquarkPDF(x2, s_hat));
-    double dbgx = 0.5*(func_downaquarkPDF(x1, s_hat)*func_gluonPDF(x2, s_hat)+func_gluonPDF(x1, s_hat)*func_downaquarkPDF(x2, s_hat));
+    double uubx = 0.5*(func_upquarkPDF(x1, s_hat)*func_upaquarkPDF(x2, s_hat)* xsect_qq(sstar, tstar, ustar)+
+		       func_upaquarkPDF(x1, s_hat)*func_upquarkPDF(x2, s_hat)* xsect_qq(sstar, ustar, tstar));
+    double ddbx = 0.5*(func_downquarkPDF(x1, s_hat)*func_downaquarkPDF(x2, s_hat)* xsect_qq(sstar, tstar, ustar)+
+		       func_downaquarkPDF(x1, s_hat)*func_downquarkPDF(x2, s_hat)* xsect_qq(sstar, ustar, tstar));
+    double ugx = 0.5*(func_upquarkPDF(x1, s_hat)*func_gluonPDF(x2, s_hat)* xsect_qg(sstar, tstar, ustar)+
+		      func_gluonPDF(x1, s_hat)*func_upquarkPDF(x2, s_hat)* xsect_qg(sstar, ustar, tstar));
+    double dgx = 0.5*(func_downquarkPDF(x1, s_hat)*func_gluonPDF(x2, s_hat)* xsect_qg(sstar, tstar, ustar)+
+		      func_gluonPDF(x1, s_hat)*func_downquarkPDF(x2, s_hat)* xsect_qg(sstar, ustar, tstar));
+    double ubgx = 0.5*(func_upaquarkPDF(x1, s_hat)*func_gluonPDF(x2, s_hat)* xsect_qg(sstar, tstar, ustar)+
+		       func_gluonPDF(x1, s_hat)*func_upaquarkPDF(x2, s_hat)* xsect_qg(sstar, ustar, tstar));
+    double dbgx = 0.5*(func_downaquarkPDF(x1, s_hat)*func_gluonPDF(x2, s_hat)* xsect_qg(sstar, tstar, ustar)+
+		       func_gluonPDF(x1, s_hat)*func_downaquarkPDF(x2, s_hat)* xsect_qg(sstar, ustar, tstar));
       
     // the full weight functions are the product of all this
-    w_uub = sigma_aux * uubx * 8./9.    * xsect_qq(sstar, tstar, ustar);
-    w_ddb = sigma_aux * ddbx * 8./9.    * xsect_qq(sstar, tstar, ustar);
-    w_ug  = sigma_aux * ugx  * (-1./3.) * xsect_qg(sstar, tstar, ustar);
-    w_dg  = sigma_aux * dgx  * (-1./3.) * xsect_qg(sstar, tstar, ustar);
-    w_ubg = sigma_aux * ubgx * (-1./3.) * xsect_qg(sstar, tstar, ustar);
-    w_dbg = sigma_aux * dbgx * (-1./3.) * xsect_qg(sstar, tstar, ustar);
+    w_uub = sigma_aux * uubx * 8./9.;
+    w_ddb = sigma_aux * ddbx * 8./9.    ;
+    w_ug  = sigma_aux * ugx  * (-1./3.) ;
+    w_dg  = sigma_aux * dgx  * (-1./3.) ;
+    w_ubg = sigma_aux * ubgx * (-1./3.) ;
+    w_dbg = sigma_aux * dbgx * (-1./3.) ;
   
 
     // other kinematic variables to be stored
@@ -490,14 +496,7 @@ void ZMC_pT(){
       // define here some "acceptance" cuts to prevent that unused events are stored in the ntuple (storing is much slower than generating)
     
     
-      bool accepted = true;
-      accepted = accepted && (sstar > sstar_min) && (sstar < sstar_max) ;
-      accepted = accepted && (x1 > s_hat/s) && (x2 > s_hat/s) && (x1 < 1.) && (x2 < 1.);
-      
-      // store in the ntuple:
-    
-      if ( accepted )
-	zbar->Fill();
+    zbar->Fill();
     
     
   } // end of generation loop

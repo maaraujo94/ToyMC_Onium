@@ -28,23 +28,25 @@ void plot_Z()
   double yminC8[] = {0.0, 0.0, 0.4, 0.8, 1.2, 1.6};
   double ymaxC8[] = {2.0, 0.4, 0.8, 1.2, 1.6, 2.0};
   
-  double xi_min_global = 0.;
+  double xi_min_global = 0.1;
   double xi_max_global = 30;
   
   /////////////////////////////////////////
   // part 1 : variables to be changed on each run
 
   // type of MC files
-  string type = "ZMC_LO_pT/";
+  string typein = "ZMC_symm_pT/";
+  string typeout = "ZMC_noSc_pT/";
 
   // choose sqrt(s) we're plotting
   const int nsqs = 2;
   string sqsNames[nsqs] = {"8", "13"}; 
   int nentries[nsqs];
+  double jacV[nsqs];
   
   double xi_bin_width = 0.1;   // constant for easier normalization
   
-  double normfactor[nsqs] = {1.5e9, 1.5e9}; // same for all y and sqrt(s)
+  double normfactor[nsqs] = {40., 40.}; // same for all y and sqrt(s)
   
   // data TGraphs (xi and y dists)
   TGraphAsymmErrors ***xi_g_A = new TGraphAsymmErrors**[nsqs];
@@ -63,8 +65,8 @@ void plot_Z()
 
   /////////////////////////////////////////
   // part 2 : create ROOT file and save results
-  
-  TFile *tf = new TFile(Form("%sMC_vs_Data_%s.root", type.c_str(), dataName.c_str()), "RECREATE", "MC histograms and Data graphs");
+
+  TFile *tf = new TFile(Form("%sMC_vs_Data_%s.root", typeout.c_str(), dataName.c_str()), "RECREATE", "MC histograms and Data graphs");
   TTree *norm_factor = new TTree("norm", "norm factor");
 
   norm_factor->Branch("normfactor_8", &normfactor[0]);
@@ -78,7 +80,7 @@ void plot_Z()
   for(int i = 0; i < nsqs; i++) {
     
     string sqsName = sqsNames[i];
-    string fName = Form("%s%sMC_res_%s_%s", loc.c_str(), type.c_str(), dataName.c_str(), sqsName.c_str());   // file to open
+    string fName = Form("%s%sMC_res_%s_%s", loc.c_str(), typein.c_str(), dataName.c_str(), sqsName.c_str());   // file to open
 
     /////////////////////////////////////////
     // part 3 : making the data TGraphs
@@ -125,12 +127,14 @@ void plot_Z()
     nentries[i] = tree->GetEntries();
     cout << nentries[i] << " events in " << sqsName << " TeV tree " << endl;
     int chk = nentries[i] / 100;
+    jacV[i] = 0;
 
     if(sqsName == "13") {
       for( int in = 0; in < nentries[i]; in++)
 	{
 	  tree->GetEntry(in);
-
+	  jacV[i] += jac;
+  
 	  // ATLAS part
 	  for (int k = 0; k < n_ybins[i][0]; k++) 
 	    if(abs(y) > yminA13[k] && abs(y) < ymaxA13[k] &&
@@ -160,6 +164,7 @@ void plot_Z()
       for( int in = 0; in < nentries[i]; in++)
 	{
 	  tree->GetEntry(in);
+	  jacV[i] += jac;
 	  
 	  // ATLAS part
 	  for (int k = 0; k < n_ybins[i][0]; k++) 
@@ -195,10 +200,11 @@ void plot_Z()
     }
     
     cout << endl;
+    
     fin->Close();
 
     // scaling the histos to nr events + y bin width
-    double n = nentries[i];
+    double n = 1.;//jacV[i];
     for(int j = 0; j < n_ybins[i][0]; j++) { // ATLAS cycle
       double yM = (sqsName == "13" ? ymaxA13[j] : ymaxA8[j]);
       double ym = (sqsName == "13" ? yminA13[j] : yminA8[j]);
@@ -236,7 +242,7 @@ void plot_Z()
   
   /////////////////////////////////////////
   // part 5 : plotting
-  TFile *tf_h = new TFile(Form("%sMC_vs_Data_%s.root", type.c_str(), dataName.c_str()), "UPDATE", "MC histograms and Data graphs");
+  TFile *tf_h = new TFile(Form("%sMC_vs_Data_%s.root", typeout.c_str(), dataName.c_str()), "UPDATE", "MC histograms and Data graphs");
 
   TCanvas *can = new TCanvas("", "", 700, 700);
   can->SetLogy();
@@ -292,7 +298,7 @@ void plot_Z()
 	
       // save plot
       leg->Draw();
-      can->SaveAs(Form("%splots/xi_%s_A_y%d.pdf", type.c_str(), sqsNames[is].c_str(), j_y));
+      can->SaveAs(Form("%splots/xi_%s_A_y%d.pdf", typeout.c_str(), sqsNames[is].c_str(), j_y));
       can->Clear();
     }
     // CMS cycle
@@ -340,7 +346,7 @@ void plot_Z()
 	
       // save plot
       leg->Draw();
-      can->SaveAs(Form("%splots/xi_%s_C_y%d.pdf", type.c_str(), sqsNames[is].c_str(), j_y));
+      can->SaveAs(Form("%splots/xi_%s_C_y%d.pdf", typeout.c_str(), sqsNames[is].c_str(), j_y));
       can->Clear();
     }
   }
