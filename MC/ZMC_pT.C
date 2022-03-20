@@ -25,7 +25,7 @@ PDF *pdf_ct = mkPDF("CT14lo", 0);
 const int n_events = 1e8;
 //const int n_events = 1e3;
 
-double sqrts = 16000;  // write here collision energy in GeV
+double sqrts = 13000;  // write here collision energy in GeV
 double s = sqrts*sqrts;
 
 const double M = 91.1876;
@@ -493,7 +493,7 @@ void ZMC_pT(){
     axAngle = HXaxis.Angle(ggHXaxis);
     
       //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-      // define here some "acceptance" cuts to prevent that unused events are stored in the ntuple (storing is much slower than generating)
+      // fill tree and end event
     
     
     zbar->Fill();

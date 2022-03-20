@@ -24,14 +24,14 @@ PDF *pdf_ct = mkPDF("CT14nnlo", 0);
 const int n_events = 1e7;
 //const int n_events = 1e3;
 
-double sqrts = 7000;  // write here collision energy in GeV
+double sqrts = 13000;  // write here collision energy in GeV
 double s = sqrts*sqrts;
 
-const double M = 3.097; // for the Jpsi
+//const double M = 3.097; // for the Jpsi
 //const double M = 3.686; // for the Psi(2S)
 //const double M = 9.46;  // for the Ups(1S)
 //const double M = 10.023;  // for the Ups(2S)
-//const double M = 10.355;  // for the Ups(3S)
+const double M = 10.355;  // for the Ups(3S)
 
 // generation limits for xi and y
 const double xi_min = 1.;
@@ -42,7 +42,7 @@ const double sstar_min = pow( xi_min + sqrt(1. + xi_min*xi_min), 2.);
 const double sstar_max = s/(M*M);
 
 // defining here all the fit conditions and parameters
-const double beta = 2.;
+const double beta = 3.;
 const double rho = 2.;
 const double delta = 0.;
 
@@ -71,7 +71,7 @@ double func_gluonPDF(double x_gluon, double q2)
 
   return pdf;
 }
-double func_quarkPDF(double x_quark, double q2)
+double func_downquarkPDF(double x_quark, double q2)
 {
   // definition of quark down PDF as a function of x (argument) and Q^2 (parameter 0), with function starting at x_min (parameter 1)
 
@@ -89,12 +89,10 @@ double func_quarkPDF(double x_quark, double q2)
 // define as double* x, double* par for any that is used as TF1
 
 // sstar dependent factor
-double func_xsect_sstar( double* x, double* par)
+double xsect_sstar( double sstar )
 {
-  double sstar = x[0];
-
   double xs = 0.;
-
+  
   if ( sstar > sstar_min && sstar < sstar_max) {
     xs = pow(sstar, -beta);
   }
@@ -105,7 +103,6 @@ double func_xsect_sstar( double* x, double* par)
 // costheta dependent factor (with sstar as parameter)
 double xsect_cosa(double cosa, double sstar)
 {
- 
   double pstar = (sstar-1)/(2*sqrt(sstar));
   double Estar = (sstar+1)/(2*sqrt(sstar));
 
@@ -128,8 +125,6 @@ void qqbarMC(){
   beam1_LAB.SetPxPyPzE( 0., 0., pbeam, Ebeam);
   beam2_LAB.SetPxPyPzE( 0., 0., -pbeam, Ebeam);
   
-  TF1* xsect_sstar = new TF1( "xsect_sstar", func_xsect_sstar, sstar_min, sstar_max, 0);
-  
   TFile* hfile = new TFile( "MC_res.root", "RECREATE", "qqbarMC" );
 
   //defining the parameters to be used here
@@ -143,7 +138,7 @@ void qqbarMC(){
   double cosalpha_inv, axAngle;
   
   // weights to be applied to the events when any distribution is plotted
-  double jac, w_gg, w_qg, w_cos, w_sstar, pick;
+  double jac, w_gg, w_qg, w_cos, w_sstar;
   double w_CS_tr, w_HX_tr, w_PX_tr, w_ggHX_tr;
   double w_CS_lg, w_HX_lg, w_PX_lg, w_ggHX_lg;
   
@@ -189,9 +184,6 @@ void qqbarMC(){
   qqbar->Branch( "w_PX_lg",   &w_PX_lg,   "w_PX_lg/D"  );
   qqbar->Branch( "w_ggHX_lg", &w_ggHX_lg, "w_ggHX_lg/D"  );
   
-  qqbar->Branch( "pick",      &pick,      "pick/D"  );
-  
-  
   // counter to show progress of the generation
   const int n_step = n_events/50;
   cout << endl;
@@ -199,63 +191,45 @@ void qqbarMC(){
   cout << "Progress: ";
   
   /////////////////// CYCLE OF EVENTS ////////////////////////
-  double x_min = sstar_min*M*M / s; // min of the parton fractional momentum; this expression derives from x1*x2 = shat / s and |x| < 1
-  double x_max = 1.; // is it true that x can always reach 1? CHECK
-
-    for( int i_event = 1; i_event <= n_events; i_event++ ){
+  for( int i_event = 1; i_event <= n_events; i_event++ ){
 
     if (i_event%n_step == 0) cout << "X" << flush;
 	
     // generate
-    // sstar from function
-    sstar = xsect_sstar->GetRandom();
+    // pT, y, cosalpha from uniform
+    double pT = gRandom->Uniform(xi_min*M, xi_max*M);
+    xi = pT/M;
+    y = gRandom->Uniform(-y_max,y_max);
+    cosalpha = gRandom->Uniform(-1., 1.);
+
+    // now get kinematic variables from these
+    double pstar = xi / sqrt(1.-cosalpha*cosalpha);
+    double sqstar = pstar + sqrt(1.+pstar*pstar);
+    sstar = sqstar*sqstar;
     double s_hat = M*M * sstar;
-
-    // random generation of either x1 or x2
-    pick = gRandom->Uniform(-1,1);
-    if(pick > 0) {
-      double logx1 = gRandom->Uniform(log(x_min), log(x_max));
-      x1 = exp(logx1);
-      x2 = s_hat / s / x1;
-    }
-    else {
-      double logx2 = gRandom->Uniform(log(x_min), log(x_max));
-      x2 = exp(logx2);
-      x1 = s_hat / s / x2;
-    }
-  
-    // cosalpha from uniform;
-    cosalpha = gRandom->Uniform(-1, 1);
-
-    // quarkonium kinematic variables
-    // p, pT, pL, E -> all partonic and /M
-    double pstar = (sstar-1)/(2*sqrt(sstar)); 
-    pLstar = pstar*cosalpha;
     double Estar = (sstar+1)/(2*sqrt(sstar));
-    xi = pstar*sqrt(1-cosalpha*cosalpha);
-  
-    // y expressions + pL (pT^hat = pT)
+    pLstar = pstar * cosalpha;
     double y_hat = 0.5*log((Estar + pLstar)/(Estar - pLstar));
-    y_gg = 0.5*log(x1/x2);
-    y = y_hat + y_gg;
-    double pL = sqrt(1+xi*xi)*sinh(y)*M;
+    y_gg = y - y_hat;
+    x1 = sqrt(s_hat)/sqrts*exp(y_gg);
+    x2 = sqrt(s_hat)/sqrts*exp(-y_gg);
 
+    double pL = sqrt(1+xi*xi)*sinh(y)*M;
+ 
     // skip event if outside gen range or unphysical x
-    if(xi < xi_min || xi > xi_max || abs(y) > y_max || x1 > 1 || x2 > 1)
+    if(sstar < sstar_min || sstar > sstar_max || x1 > 1 || x2 > 1)
       continue;
     
     // different weight components
-    // to get the right weight for an event apply all weights that count
-    // e.g. a gg event with uniformly-generated cosalpha has w = w_gg * w_cos
 
-    // dx1 dx2 dt^hat = Jac * dlogx dsstar dcosalpha^hat
-    //jac =  (s_hat - M*M) / ((2.*s)/(M*M)) ;
-    jac = 1./s;
+    // dx1 dx2 dt^hat = Jac * dpT dy dcosalpha^hat
+    // Jac = x1 x2 / pT * pstar / Estar * (s^hat - M^2)
+    jac =  (x1*x2 / pT) * pstar/Estar * (s_hat - M*M) ;
     w_gg = func_gluonPDF( x2, s_hat ) * func_gluonPDF( x1, s_hat );
-    w_qg = func_quarkPDF( x2, s_hat ) * func_gluonPDF( x1, s_hat );
+    w_qg = func_downquarkPDF( x2, s_hat ) * func_gluonPDF( x1, s_hat );
 
     w_cos = xsect_cosa(cosalpha, sstar);
-    w_sstar = xsect_sstar->Eval(sstar);
+    w_sstar = xsect_sstar(sstar);
     
     // other kinematic variables to be stored for the partons
     double Phi1 = 2. * gPI * gRandom->Uniform(1.) - gPI;
@@ -472,22 +446,14 @@ void qqbarMC(){
     axAngle = HXaxis.Angle(ggHXaxis);
 
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    // define here some "acceptance" cuts to prevent that unused events are stored in the ntuple (storing is much slower than generating)
-    
-    bool accepted = true;
-
-    accepted = accepted && (xi > xi_min) && (xi < xi_max) ;
-    //accepted = accepted && abs(y) < y_max;
-    
     // store in the ntuple:
     
-    if ( accepted )
-      qqbar->Fill();
+    qqbar->Fill();
     
     
-  
+    
   } // end of generation loop
-
+  
   cout << endl << endl;
 
   hfile->Write();

@@ -18,14 +18,13 @@
 using namespace LHAPDF;
 using namespace std;
 
-//PDF *pdf_ct = mkPDF("CT14nnlo", 0);
 PDF *pdf_ct = mkPDF("CT14lo", 0);
 
 // how many events to generate. The events will be weighted by the partonic cross section, so many of them will count very little.
 const int n_events = 1e8;
 //const int n_events = 1e3;
 
-double sqrts = 16000;  // write here collision energy in GeV
+double sqrts = 13000;  // write here collision energy in GeV
 double s = sqrts*sqrts;
 
 const double M = 91.1876;
@@ -212,7 +211,7 @@ void ZMC(){
   cout << "Progress: ";
   
   /////////////////// CYCLE OF EVENTS ////////////////////////
-  double x_min = sstar_min*M*M / s;//s_hat / s; // min of the parton fractional momentum; this expression derives from x1*x2 = shat / s and |x| < 1
+  double x_min = sstar_min*M*M / s; // min of the parton fractional momentum; this expression derives from x1*x2 = shat / s and |x| < 1
   double x_max = 1.; // is it true that x can always reach 1? CHECK
 
   for( int i_event = 1; i_event <= n_events; i_event++ ){
@@ -227,7 +226,6 @@ void ZMC(){
     // random generation of either x1 or x2
     // logx -> x from uniform
     pick = gRandom->Uniform(-1,1);
-    // CHANGE
     if(pick > 0) {
       double logx1 = gRandom->Uniform(log(x_min), log(x_max));
       x1 = exp(logx1);
@@ -513,11 +511,9 @@ void ZMC(){
     axAngle = HXaxis.Angle(ggHXaxis);
         
     //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    // define here some "acceptance" cuts to prevent that unused events are stored in the ntuple (storing is much slower than generating)
-    
+    // Fill tree and end event
     zbar->Fill();
     
-    if (i_event%n_step == 0) cout << "X" << flush;
     
   } // end of generation loop
   

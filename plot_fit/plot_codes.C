@@ -31,7 +31,7 @@ void xi_jpsi_7(TGraphAsymmErrors **g, TH1F ***h)
     while(getline(file,data)) n_pts+=1;
       
     double pt[n_pts], dpt_lo[n_pts], dpt_hi[n_pts], sig[n_pts], dsig_lo[n_pts], dsig_hi[n_pts], bins[n_pts+1];
-      
+
     file.clear();
     file.seekg(0);
     for(int j = 0; j < n_pts; j++) {
@@ -51,7 +51,7 @@ void xi_jpsi_7(TGraphAsymmErrors **g, TH1F ***h)
       dsig_lo[j] = sqrt(nums[7]*nums[7]+nums[9]*nums[9])*mass/(signorm);
     }
     file.close();
-          
+    
     g[k] = new TGraphAsymmErrors(n_pts, pt, sig, dpt_lo, dpt_hi, dsig_lo, dsig_hi);
 
     for(int ib = 0; ib < 2; ib++)

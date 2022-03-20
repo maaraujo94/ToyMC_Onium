@@ -1,13 +1,13 @@
 // code that reads stored TGraph data and TH1 MC plots
-// and fits normalizations, lumi NP and f_beta1
+// and fits normalizations, lumi NP and f_beta2
 
 #import "pull_codes.C"
 #import "dev_code.C"
 
 // struct to store the pairs of MC vs data results
 struct bin_coll {
-  TH1F* MC_beta1;
   TH1F* MC_beta2;
+  TH1F* MC_beta3;
   TGraphAsymmErrors* Data_graph;
   string exp;
   string state;
@@ -51,15 +51,15 @@ double myFunction(double *par)
   double LL7_j = par[n_norm+2];
   double LL7 = par[n_norm+3];
   double LL13 = par[n_norm+4];
-  double f_beta1 = par[n_norm+5];
+  double f_beta2 = par[n_norm+5];
   
   double chisquare = 0;
   
   // cycle over all structs
   for(int i = 0; i <(int)bin_c.size(); i++) {
     // only fitting the xi plots for now
-    TH1F* h1 = bin_c[i].MC_beta1;
-    TH1F* h2 = bin_c[i].MC_beta2;
+    TH1F* h1 = bin_c[i].MC_beta2;
+    TH1F* h2 = bin_c[i].MC_beta3;
     TGraphAsymmErrors* g = bin_c[i].Data_graph;
     
     int nb = h1->GetNbinsX();
@@ -72,7 +72,7 @@ double myFunction(double *par)
       // if pT/M > 2, get chisquare contrib
       if(h1->GetBinLowEdge(j+1) > 2) {
 	
-	double mc_val = f_beta1*h1->GetBinContent(j+1)+(1.-f_beta1)*h2->GetBinContent(j+1);
+	double mc_val = f_beta2*h1->GetBinContent(j+1)+(1.-f_beta2)*h2->GetBinContent(j+1);
 	double data_val = g_y[j];
 	double data_err = g_e[j];
 	
@@ -122,11 +122,11 @@ void fitNorm()
 {
   const int n_state = 3;
   const int n_beta = 2;
-  string sList[] = {"jpsi", "psi2", "ups1"};
-  int bList[] = {1, 2};
+  string sList[] = {"ups1", "ups2", "ups3"};
+  int bList[] = {2, 3};
   double normFactor[n_beta][n_state];
   int n_plots[n_state];
-  string type = "rho2delta0/";
+  string type = "newQQbar/";
 
   // open file first time to get normalizations and nr histos/graphs
   for(int is = 0; is < n_state; is++) {
@@ -150,7 +150,7 @@ void fitNorm()
       }
       else if (cl->InheritsFrom("TGraphAsymmErrors")) {
 	TH1 *h = (TH1*)key->ReadObj();
-	string name = h->GetName();
+	string name = h->GetTitle();
 	if(name.find("p_{T}") != string::npos) continue;
 	n_tot++;
       }
@@ -173,21 +173,21 @@ void fitNorm()
     TKey *key;
     int test_v = 0;
 
-    // structure is beta1 - beta2 - graph
+    // structure is beta2 - beta3 - graph
     while ((key = (TKey*)n_ent())) {
       TClass *cl = gROOT->GetClass(key->GetClassName());
       // start by reading the two MC histos
       if (cl->InheritsFrom("TH1") && test_v < 2) {
 	TH1F *h = (TH1F*)key->ReadObj();
-	string name = h->GetName();
+	string name = h->GetTitle();
 	if(name.find("p_{T}") != string::npos) {
 	  continue;
 	}
 	// on the first (xi) histo, store the extra struct stuff
 	if(test_v == 0) {
-	  bin_c[ct].MC_beta1 = (TH1F*)key->ReadObj();
-	  bin_c[ct].MC_beta1->SetDirectory(0);
-	  bin_c[ct].MC_beta1->Scale(1./normFactor[test_v][is]);
+	  bin_c[ct].MC_beta2 = (TH1F*)key->ReadObj();
+	  bin_c[ct].MC_beta2->SetDirectory(0);
+	  bin_c[ct].MC_beta2->Scale(1./normFactor[test_v][is]);
 
 	  vector <string> aux = parseString(name, " ");
 	  bin_c[ct].ylim[0] = stof(aux[2]);
@@ -199,9 +199,9 @@ void fitNorm()
 	}
 	// second histo just stores the histo itself
 	else if(test_v == 1) {
-	  bin_c[ct].MC_beta2 = (TH1F*)key->ReadObj();
-	  bin_c[ct].MC_beta2->SetDirectory(0);
-	  bin_c[ct].MC_beta2->Scale(1./normFactor[test_v][is]);
+	  bin_c[ct].MC_beta3 = (TH1F*)key->ReadObj();
+	  bin_c[ct].MC_beta3->SetDirectory(0);
+	  bin_c[ct].MC_beta3->Scale(1./normFactor[test_v][is]);
 	}
  	
 	test_v ++;
@@ -224,15 +224,16 @@ void fitNorm()
   
   TFitter *fit = new TFitter(n_pars);
   fit->SetFCN(minuitFunction);
-
   
   string fList[] = {"jpsi", "psi2", "ups1", "ups2", "ups3"};
+  int pos_s = 0;
   for(int is = 0; is < n_allS; is++) {
     int ct = 0;
     for(int ir = 0; ir < n_state; ir++) {
       if(fList[is].find(sList[ir]) != string::npos) { 
-	fit->SetParameter(is, Form("%s_norm", fList[is].c_str()), normFactor[1][is], normFactor[1][is]/10., 0, 0);
+	fit->SetParameter(is, Form("%s_norm", fList[is].c_str()), normFactor[1][pos_s], normFactor[1][pos_s]/10., 0, 0);
 	ct = 1;
+	pos_s++;
       }
     }
     if(ct == 0) {
@@ -247,10 +248,12 @@ void fitNorm()
   fit->SetParameter(n_allS+2, "L_LHCb_7_j", 1., 0.1, 0, 0);
   fit->SetParameter(n_allS+3, "L_LHCb_7", 1., 0.1, 0, 0);
   fit->SetParameter(n_allS+4, "L_LHCb_13", 1., 0.1, 0, 0);
+  fit->FixParameter(n_allS+2);
+
   //for(int inp = 0; inp < 5; inp++) fit->FixParameter(n_state+inp);
 
-  fit->SetParameter(n_pars-1, "f_beta1", 0., 0.1, 0, 0);
-  fit->FixParameter(n_pars-1);
+  fit->SetParameter(n_pars-1, "f_beta2", 0., 0.1, 0, 0);
+  //fit->FixParameter(n_pars-1);
   
   fit->ExecuteCommand("MIGRAD", 0, 0);
 
@@ -263,7 +266,7 @@ void fitNorm()
   int npts = 0;
   // get nr pts in fit
   for(int i = 0; i <(int)bin_c.size(); i++) {
-    TH1F* h1 = bin_c[i].MC_beta1;
+    TH1F* h1 = bin_c[i].MC_beta2;
     int nb = h1->GetNbinsX();
     for(int j = 0; j < nb; j++)
       if(h1->GetBinLowEdge(j+1) > 2) {
@@ -278,7 +281,7 @@ void fitNorm()
 
   cout << "chi^2 norm = " << minimum/(float)npts << endl;
   cout << "chi^2 prob = " << TMath::Prob(minimum, npts) << endl;
-
+  
   // print fit results in a TeX file
   ofstream tex;
   tex.open(Form("%sfitPar.tex", type.c_str()));
@@ -321,7 +324,7 @@ void fitNorm()
   }
   tex << "\\hline" << endl;
   int p_fbeta = ceil(-log10(fit->GetParError(n_pars-1)*100.))+1;
-  tex << "& & $f_{\\beta1}$ & $(" << setprecision(p_fbeta) << fixed << pars[n_pars-1]*100. << "\\pm" << fit->GetParError(n_pars-1)*100 << ")$\\% & " << endl;
+  tex << "& & $f_{\\beta2}$ & $(" << setprecision(p_fbeta) << fixed << pars[n_pars-1]*100. << "\\pm" << fit->GetParError(n_pars-1)*100 << ")$\\% & " << endl;
   tex << "\\end{tabular}" << endl;
   tex << "\\caption{Results of the normalization fit. " << Form("$\\chi^2/$ndf = %.0f / %d.}", minimum, npts) << endl;
   tex << "\\label{t:fit}" << endl;
@@ -340,7 +343,7 @@ void fitNorm()
   TBranch *L_7_j_unc = fit_norms->Branch("LHCb_7_jpsi_lumi_unc", &pars[n_allS+2]);
   TBranch *L_7_unc = fit_norms->Branch("LHCb_7_lumi_unc", &pars[n_allS+3]);
   TBranch *L_13_unc = fit_norms->Branch("LHCb_13_lumi_unc", &pars[n_allS+4]);
-  TBranch *f_b1 = fit_norms->Branch("f_beta1", &pars[n_pars-1]);
+  TBranch *f_b1 = fit_norms->Branch("f_beta2", &pars[n_pars-1]);
   
   fit_norms->Fill();
 
@@ -387,7 +390,6 @@ void fitNorm()
 	  y_max[i] = y_max_ups[i]; 
 	}
       }
-
       
       // one if condition for each state and sqrt(s)
       if(sqsVal == 7) {
@@ -527,8 +529,8 @@ void fitNorm()
 	  // apply norms and corrections to struct histos and graph
 	  for(int ir = 0; ir < n_allS; ir++) 
 	    if(fList[ir].find(sList[is]) != string::npos)  {
-	      bin_c[i].MC_beta1->Scale(pars[ir]);
 	      bin_c[i].MC_beta2->Scale(pars[ir]);
+	      bin_c[i].MC_beta3->Scale(pars[ir]);
 	    }
 	  
 	  for(int i_bin = 0; i_bin < bin_c[i].Data_graph->GetN(); i_bin++) {
@@ -544,14 +546,14 @@ void fitNorm()
 	      bin_c[i].Data_graph->GetY()[i_bin] *= pars[n_allS+4];
 	  }
 	  
-	  TH1F *h_comb = (TH1F*)bin_c[i].MC_beta1->Clone();
+	  TH1F *h_comb = (TH1F*)bin_c[i].MC_beta2->Clone();
 	  h_comb->Scale(pars[n_pars-1]);
-	  h_comb->Add(bin_c[i].MC_beta2, 1.-pars[n_pars-1]);
+	  h_comb->Add(bin_c[i].MC_beta3, 1.-pars[n_pars-1]);
 
 	  h_comb->Draw("hist same");
 	  bin_c[i].Data_graph->Draw("p same");
 
-	  vector <string> aux = parseString(h_comb->GetName(), " ");
+	  vector <string> aux = parseString(h_comb->GetTitle(), " ");
 	  string newname = "";
 	  for(int i_elm = 0; i_elm < aux.size()-3; i_elm++) {
 	    newname += aux[i_elm];
@@ -559,11 +561,11 @@ void fitNorm()
 	      newname += " ";
 	  }
 	  h_comb->SetName(Form("Fitted %s %s", state.c_str(), newname.c_str()));
-	  bin_c[i].MC_beta1->SetName(Form("%s %s", state.c_str(), bin_c[i].MC_beta1->GetName()));
 	  bin_c[i].MC_beta2->SetName(Form("%s %s", state.c_str(), bin_c[i].MC_beta2->GetName()));
+	  bin_c[i].MC_beta3->SetName(Form("%s %s", state.c_str(), bin_c[i].MC_beta3->GetName()));
 	  
-	  bin_c[i].MC_beta1->Write();
 	  bin_c[i].MC_beta2->Write();
+	  bin_c[i].MC_beta3->Write();
 	  //h_comb->Write();
 
 	  TLine* xi_cut = new TLine(2, xi_yax_min[j_y], 2, xi_yax_max[j_y]);
@@ -576,7 +578,7 @@ void fitNorm()
 	  lc.SetTextSize(0.03);
 	  xpos = getPos(xi_min[j_y], xi_max[j_y], 0.7, 0);
 	  ypos = getPos(xi_yax_min[j_y], xi_yax_max[j_y], 0.8, 1);
-	  lc.DrawLatex(xpos, ypos, Form("f_{#beta=1} = %.1f%%", pars[n_pars-1]*100.));
+	  lc.DrawLatex(xpos, ypos, Form("f_{#beta=2} = %.1f%%", pars[n_pars-1]*100.));
 	  xpos = getPos(xi_min[j_y], xi_max[j_y], 0.65, 0);
 	  ypos = getPos(xi_yax_min[j_y], xi_yax_max[j_y], 0.9, 1);
 	  lc.DrawLatex(xpos, ypos, Form("#chi^{2}/ndf = %.0f / %d", minimum, npts));
@@ -643,9 +645,9 @@ void fitNorm()
 	  // only fitting the xi plots for now
 	  if(bin_c[i].sqrts == sqsVal && bin_c[i].exp == exp && bin_c[i].state == state) {
 	    xi_g[ct] = bin_c[i].Data_graph;
-	    TH1F *h_comb = (TH1F*)bin_c[i].MC_beta1->Clone();
+	    TH1F *h_comb = (TH1F*)bin_c[i].MC_beta2->Clone();
 	    h_comb->Scale(pars[n_pars-1]);
-	    h_comb->Add(bin_c[i].MC_beta2, 1.-pars[n_pars-1]);
+	    h_comb->Add(bin_c[i].MC_beta3, 1.-pars[n_pars-1]);
 
 	    xi_h[ct] = h_comb;
 	    ct++;
@@ -738,9 +740,9 @@ void fitNorm()
 	  // only fitting the xi plots for now
 	  if(bin_c[i].sqrts == sqsVal && bin_c[i].exp == exp && bin_c[i].state == state) {
 	    xi_g[ct] = bin_c[i].Data_graph;
-	    TH1F *h_comb = (TH1F*)bin_c[i].MC_beta1->Clone();
+	    TH1F *h_comb = (TH1F*)bin_c[i].MC_beta2->Clone();
 	    h_comb->Scale(pars[n_pars-1]);
-	    h_comb->Add(bin_c[i].MC_beta2, 1.-pars[n_pars-1]);
+	    h_comb->Add(bin_c[i].MC_beta3, 1.-pars[n_pars-1]);
 	    xi_h[ct] = h_comb;
 	    
 	    ylim[ct][0] = bin_c[i].ylim[0];
@@ -831,9 +833,9 @@ void fitNorm()
 	  // only fitting the xi plots for now
 	  if(bin_c[i].sqrts == sqsVal && bin_c[i].exp == exp && bin_c[i].state == state) {
 	    xi_g[ct] = bin_c[i].Data_graph;
-	    TH1F *h_comb = (TH1F*)bin_c[i].MC_beta1->Clone();
+	    TH1F *h_comb = (TH1F*)bin_c[i].MC_beta2->Clone();
 	    h_comb->Scale(pars[n_pars-1]);
-	    h_comb->Add(bin_c[i].MC_beta2, 1.-pars[n_pars-1]);
+	    h_comb->Add(bin_c[i].MC_beta3, 1.-pars[n_pars-1]);
 	    xi_h[ct] = h_comb;
 	    	    
 	    ct++;
@@ -880,7 +882,7 @@ void fitNorm()
   
   can->SaveAs(Form("%sxi_devs_full.pdf", type.c_str()));
   can->Clear();
-  
+  can->Destructor();
 }
 
 

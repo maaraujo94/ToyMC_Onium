@@ -35,8 +35,8 @@ void plot_Z()
   // part 1 : variables to be changed on each run
 
   // type of MC files
-  string typein = "ZMC_symm_pT/";
-  string typeout = "ZMC_noSc_pT/";
+  string typein = "newZMC/";
+  string typeout = "newZMC/";
 
   // choose sqrt(s) we're plotting
   const int nsqs = 2;
@@ -46,7 +46,7 @@ void plot_Z()
   
   double xi_bin_width = 0.1;   // constant for easier normalization
   
-  double normfactor[nsqs] = {40., 40.}; // same for all y and sqrt(s)
+  double normfactor[nsqs] = {40, 40}; // same for all y and sqrt(s)
   
   // data TGraphs (xi and y dists)
   TGraphAsymmErrors ***xi_g_A = new TGraphAsymmErrors**[nsqs];
@@ -67,13 +67,6 @@ void plot_Z()
   // part 2 : create ROOT file and save results
 
   TFile *tf = new TFile(Form("%sMC_vs_Data_%s.root", typeout.c_str(), dataName.c_str()), "RECREATE", "MC histograms and Data graphs");
-  TTree *norm_factor = new TTree("norm", "norm factor");
-
-  norm_factor->Branch("normfactor_8", &normfactor[0]);
-  norm_factor->Branch("normfactor_13", &normfactor[1]);
-  norm_factor->Fill();
-  
-  tf->Write();
   tf->Close();    
   
   // cycle in sqrt(s)
@@ -204,7 +197,7 @@ void plot_Z()
     fin->Close();
 
     // scaling the histos to nr events + y bin width
-    double n = 1.;//jacV[i];
+    double n = 1.;
     for(int j = 0; j < n_ybins[i][0]; j++) { // ATLAS cycle
       double yM = (sqsName == "13" ? ymaxA13[j] : ymaxA8[j]);
       double ym = (sqsName == "13" ? yminA13[j] : yminA8[j]);
@@ -244,6 +237,16 @@ void plot_Z()
   // part 5 : plotting
   TFile *tf_h = new TFile(Form("%sMC_vs_Data_%s.root", typeout.c_str(), dataName.c_str()), "UPDATE", "MC histograms and Data graphs");
 
+  TTree *norm_factor = new TTree("normT", "norm factor");
+  
+  norm_factor->Branch("normfactor_8", &normfactor[0]);
+  norm_factor->Branch("normfactor_13", &normfactor[1]);
+  norm_factor->Fill();
+
+  normfactor[0] = jacV[0];
+  normfactor[1] = jacV[1];
+  norm_factor->Fill();
+    
   TCanvas *can = new TCanvas("", "", 700, 700);
   can->SetLogy();
   can->SetLogx();

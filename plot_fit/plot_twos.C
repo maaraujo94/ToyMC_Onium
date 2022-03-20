@@ -22,9 +22,7 @@ void plot_twos()
   stateMass["ups1"] = 9.46;
   stateMass["ups2"] = 10.023;
   stateMass["ups3"] = 10.355;
-  map<string, string> ssName;
-  ssName["7"] = "qqbar_0";
-  ssName["13"] = "qqbar_1";
+  string ssName = "qqbar";
   
   double y_min_ups[7] = {0, 0.6, 2, 2.5, 3, 3.5, 4};
   double y_max_ups[7] = {0.6, 1.2, 2.5, 3, 3.5, 4, 4.5};
@@ -37,16 +35,19 @@ void plot_twos()
   // part 1 : variables to be changed on each run
 
   // type of MC files
-  string type = "rho2delta0/";
+  string type = "newQQbar/";
   
   // choose state we're plotting
   const int n_states = 5;
   string dataNames[n_states] = {"jpsi", "psi2", "ups1", "ups2", "ups3"};   // "jpsi", "psi2", "ups1", "ups2", "ups3"
+
   // choose sqrt(s) we're plotting
-  string sqsNames[2] = {"7", "13"};   // "7", "13"
+  const int nsqs = 2;
+  string sqsNames[nsqs] = {"7", "13"};   // "7", "13"
 
   double xi_bin_width = 0.1;   // constant for easier normalization
 
+  double normFactor_b[2] = {1.4e-2, 1.4e-2}; // normalization to be applied on MC
   double y_plot_min = 0, y_plot_max = 5;
   
   /////////////////////////////////////////
@@ -55,30 +56,28 @@ void plot_twos()
   for(int i_s = 0; i_s < n_states; i_s++) {
     string dataName = dataNames[i_s];
     cout << "running state " << dataName << endl;
-
-    string fName = Form("%s%sMC_res_%s", loc.c_str(), type.c_str(), dataName.c_str());   // file to open
   
-    double normFactor_b[2] = {1.e4, 1.e4}; // normalization to be applied on MC
+    string fName = Form("%s%sMC_res_%s", loc.c_str(), type.c_str(), dataName.c_str());   // file to open
 
     if(dataName == "jpsi") {
-      normFactor_b[0] = 5.e3;
-      normFactor_b[1] = 4.e4;
+      normFactor_b[0] = 1.4e-2;
+      normFactor_b[1] = 1.4e-2;
     }
     else if(dataName == "psi2") {
-      normFactor_b[0] = 2e3;
-      normFactor_b[1] = 1.e4;
+      normFactor_b[0] = 3.5e-3;
+      normFactor_b[1] = 3.5e-3;
     }
     else if(dataName == "ups1") {
-      normFactor_b[0] = 2.e3;
-      normFactor_b[1] = 9.e3;
+      normFactor_b[0] = 1e-4;
+      normFactor_b[1] = 1e-4;
     }
     else if(dataName == "ups2") {
-      normFactor_b[0] = 1.4e3;
-      normFactor_b[1] = 5.e3;
+      normFactor_b[0] = 7e-5;
+      normFactor_b[1] = 7e-5;;
     }
     else if(dataName == "ups3") {
-      normFactor_b[0] = 1.e3;
-      normFactor_b[1] = 2.5e3;
+      normFactor_b[0] = 4e-5;
+      normFactor_b[1] = 4e-5;
     }
     
     // extra part: create ROOT file and save results
@@ -440,35 +439,49 @@ void plot_twos()
 	/////////////////////////////////////////
 	// part 4 : making the MC histograms
 
-	int y_nbin = xi_n+1;
+	/*	int y_nbin = xi_n+1;
 	TH1F ***y_h = new TH1F**[2];
 	for(int ib = 0; ib < 2 ; ib++) {
 	  y_h[ib] = new TH1F*[y_n];
 	  for(int j = 0; j < y_n; j++)
 	    y_h[ib][j] = new TH1F(Form("y_xi%d_b%d", j, ib), Form("y_xi%d_b%d", j, ib), y_nbin, y_lim);
-	}
+	    }*/
 	
 	// variables to open the MC
 	Double_t xi;
 	Double_t w_gg;
 	Double_t w_cos;
+	Double_t w_sstar;
+	Double_t jac;
 	Double_t y;
 	
 	Int_t nentries[2];
-	
+	double n_b[2];
+
 	for(int ib = 0; ib < 2; ib++)
 	  {
-	    TFile *fin = new TFile(Form("%s_beta%d.root", fName.c_str(), ib+1));
-	    TTree *tree = (TTree*)fin->Get(ssName[sqsName].c_str());
+	    TFile *fin = new TFile(Form("%s_beta%d_%s.root", fName.c_str(), ib+2, sqsName.c_str()));
+	    TTree *tree = (TTree*)fin->Get(ssName.c_str());
 	    
 	    tree->SetBranchAddress("w_gg", &w_gg);
 	    tree->SetBranchAddress("w_cos", &w_cos);
+	    tree->SetBranchAddress("w_sstar", &w_sstar);
+	    tree->SetBranchAddress("jac", &jac);
 	    tree->SetBranchAddress("xi", &xi);
 	    tree->SetBranchAddress("y", &y);
 	    
 	    nentries[ib] = (Int_t)tree->GetEntries();
-	    cout << nentries[ib] << " events in beta = " << ib+1 << " tree " << endl;
+	    cout << nentries[ib] << " events in beta = " << ib+2 << " tree " << endl;
 	    int chk = nentries[ib] / 100;
+
+	    for(int k = 0; k < xi_n; k++)
+	      xi_h[ib][k]->Sumw2();
+
+	    tree->Draw("xi>>hnew", "w_gg*w_cos*w_sstar*jac*(xi < 5.01 && xi > 4.99)");
+	    TH1F *hbeta = (TH1F*)gDirectory->Get("hnew");
+	    cout << "beta-dep norm = " << hbeta->Integral()/hbeta->GetNbinsX() << endl;
+	    if(i_sqs == 0)
+	      n_b[ib] = hbeta->Integral()/hbeta->GetNbinsX();
 	    
 	    for( Int_t i = 0; i < nentries[ib]; i++)
 	      {
@@ -477,14 +490,14 @@ void plot_twos()
 		// xi part (forward y)
 		for (int k = 0; k < xi_n; k++) 
 		  if(y < y_max[k] && y > y_min[k] && xi > xi_min_global && xi < 50) {
-		    xi_h[ib][k]->Fill(xi, w_gg*w_cos);
+		    xi_h[ib][k]->Fill(xi, w_gg*w_cos*w_sstar*jac);
 		  }
 		
 		// y part (also forward y)
-		for (int k = 0; k < y_n; k++)
+		/*		for (int k = 0; k < y_n; k++)
 		  if(xi < y_xi_max[k] && xi > y_xi_min[k])
-		    y_h[ib][k]->Fill(y, w_gg * w_cos);
-		
+		    y_h[ib][k]->Fill(y, w_gg * w_cos*w_sstar*jac);
+		*/
 		if((i+1)%chk == 0) {
 		  cout << (i+1)/chk << "% | " << flush;
 		}
@@ -505,7 +518,7 @@ void plot_twos()
       
 	// scaling the histos to nr events + y bin width
 	for(int ib = 0; ib < 2 ; ib++) {
-	  double n = nentries[ib];
+	  double n = n_b[ib]; // CHANGE
 	  for(int j = 0; j < xi_n; j++) {
 	    xi_h[ib][j]->Scale(normFactor_b[ib]/(n*(y_max[j]-y_min[j])));
 	    // scaling each xi bin by its width
@@ -539,13 +552,16 @@ void plot_twos()
 	  for(int ib = 0; ib < 2; ib++) {
 	    xi_h[ib][j_y]->SetStats(0);
 	    xi_h[ib][j_y]->SetLineColor(ib+1);
-	    xi_h[ib][j_y]->Draw("hist same");
+	    //xi_h[ib][j_y]->ClearUnderflowAndOverflow();
+	    //xi_h[ib][j_y]->SetFillColorAlpha(ib+1, 0);
+	    xi_h[ib][j_y]->Draw("h same ][");
 		
 	    //save in ROOT fle
-	    xi_h[ib][j_y]->SetName(Form("%s TeV %.1f < y < %.1f beta = %d", sqsName.c_str(), y_min[j_y], y_max[j_y], ib+1));
+	    xi_h[ib][j_y]->SetTitle(Form("%s TeV %.1f < y < %.1f beta = %d", sqsName.c_str(), y_min[j_y], y_max[j_y], ib+2));
+	    xi_h[ib][j_y]->SetName(Form("xi_y%d_b%d_%s", j_y, ib, sqsName.c_str()));
 	    xi_h[ib][j_y]->Write();
 	  
-	    leg->AddEntry(xi_h[ib][j_y], Form("MC #beta=%d", ib+1), "l");
+	    leg->AddEntry(xi_h[ib][j_y], Form("MC #beta=%d", ib+2), "l");
 	  }
 	
 	  // draw data graph
@@ -553,7 +569,8 @@ void plot_twos()
 	  xi_g[j_y]->SetMarkerSize(.75);
 	  xi_g[j_y]->Draw("p");
 	  // save in ROOT file
-	  xi_g[j_y]->SetName(Form("%s TeV %.1f < y < %.1f", sqsName.c_str(), y_min[j_y], y_max[j_y]));
+	  xi_g[j_y]->SetTitle(Form("%s TeV %.1f < y < %.1f", sqsName.c_str(), y_min[j_y], y_max[j_y]));
+	  xi_g[j_y]->SetName(Form("xi_y%d_%s", j_y, sqsName.c_str()));
 	  xi_g[j_y]->Write();
 	
 	  leg->AddEntry(xi_g[j_y], "data", "pl");
@@ -565,10 +582,10 @@ void plot_twos()
 	}
       
 	// y plots
-      
+	/*
 	// scaling the histos to nr events
 	for(int ib = 0; ib < 2; ib++) {
-	  double n = nentries[ib];
+	  double n = 1.;
 	  for(int j = 0; j < y_n; j++) { 
 	    y_h[ib][j]->Scale(normFactor_b[ib]/(n*(y_xi_max[j]-y_xi_min[j])*mass));
 	    // scaling each y bin to its width
@@ -600,8 +617,8 @@ void plot_twos()
 	    y_h[ib][j_xi]->SetLineColor(j_xi+1);
 	    if(j_xi+1 == 5)  y_h[ib][j_xi]->SetLineColor(kYellow+1);
 	    y_h[ib][j_xi]->Draw("hist same");
-	    leg->AddEntry(y_h[ib][j_xi], Form("%.0f < p_{T} < %.0f beta%d", y_xi_min[j_xi]*mass, y_xi_max[j_xi]*mass, ib+1), "l");
-	    y_h[ib][j_xi]->SetName(Form("%s TeV %.0f < p_{T} < %.0f beta = %d", sqsName.c_str(), y_xi_min[j_xi]*mass, y_xi_max[j_xi]*mass, ib+1));
+	    leg->AddEntry(y_h[ib][j_xi], Form("%.0f < p_{T} < %.0f beta%d", y_xi_min[j_xi]*mass, y_xi_max[j_xi]*mass, ib+2), "l");
+	    y_h[ib][j_xi]->SetTitle(Form("%s TeV %.0f < p_{T} < %.0f beta = %d", sqsName.c_str(), y_xi_min[j_xi]*mass, y_xi_max[j_xi]*mass, ib+2));
 	    y_h[ib][j_xi]->Write();
 	  }
 	}
@@ -617,7 +634,7 @@ void plot_twos()
 	    y_g[j_xi]->SetLineColor(kYellow+1);
 	  }
 	  y_g[j_xi]->Draw("p");
-	  y_g[j_xi]->SetName(Form("%s TeV %.0f < p_{T} < %.0f", sqsName.c_str(), y_xi_min[j_xi]*mass, y_xi_max[j_xi]*mass));
+	  y_g[j_xi]->SetTitle(Form("%s TeV %.0f < p_{T} < %.0f", sqsName.c_str(), y_xi_min[j_xi]*mass, y_xi_max[j_xi]*mass));
 	  y_g[j_xi]->Write();
 	}
       
@@ -664,13 +681,12 @@ void plot_twos()
 
 	// no need to redo the legend, same entries
 	leg->Draw();
-	can->SaveAs(Form("%splots_%s/y_dist_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));
+	can->SaveAs(Form("%splots_%s/y_dist_%s.pdf", type.c_str(), dataName.c_str(), sqsName.c_str()));*/
 	can->Clear();
 	can->Destructor();
 
 	tf_h->Write();
 	tf_h->Close();
-
       }
   }
 }
