@@ -1,0 +1,78 @@
+
+\documentclass{article}
+
+\usepackage{graphicx}
+
+\usepackage[margin=0.5cm]{geometry}
+\usepackage{amsmath}
+\usepackage{indentfirst}
+\usepackage{hyperref}
+\usepackage{multirow}
+\usepackage{comment}
+
+\newcommand{\cosa}{\cos\hat\alpha}
+\newcommand{\size}{0.33\textwidth}
+\newcommand{\pt}{p_\text{T}}
+
+\begin{document}
+
+\title{Toy MC generation for 7 and 13 TeV $J\psi$}
+\author{Mariana Ara\'ujo (LIP)}
+\maketitle
+
+\input{fitPar}
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.4\textwidth]{xi_devs_jpsi_7.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_devs_jpsi_13.pdf}
+\caption{Relative deviations of the fit}\label{f:xi_dev}
+\end{figure}
+
+\pagebreak
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.4\textwidth]{xi_7_y1.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y1.pdf}
+
+\includegraphics[width = 0.4\textwidth]{xi_7_y2.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y2.pdf}
+
+\includegraphics[width = 0.4\textwidth]{xi_7_y3.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y3.pdf}
+\caption{Comparison between MC $\xi$ distribution and data points in the first three $y$ bins of the data, for 7 TeV (left) and 13 TeV (right).}\label{f:xi_comp_1}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.4\textwidth]{xi_7_y4.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y4.pdf}
+
+\includegraphics[width = 0.4\textwidth]{xi_7_y5.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y5.pdf}
+
+\includegraphics[width = 0.4\textwidth]{xi_7_y6.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y6.pdf}
+\caption{Comparison between MC $\xi$ distribution and data points in the first three $y$ bins of the data, for 7 TeV (left) and 13 TeV (right).}\label{f:xi_comp_2}
+\end{figure}
+
+\clearpage
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width = 0.4\textwidth]{xi_7_y7.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y7.pdf}
+
+\includegraphics[width = 0.4\textwidth]{xi_7_y8.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y8.pdf}
+
+\includegraphics[width = 0.4\textwidth]{xi_7_y9.pdf}
+\includegraphics[width = 0.4\textwidth]{xi_13_y9.pdf}
+\caption{Comparison between MC $\xi$ distribution and data points in the last three $y$ bins of the data, for 7 TeV (left) and 13 TeV (right).}\label{f:xi_comp_3}
+\end{figure}
+
+
+\end{document}

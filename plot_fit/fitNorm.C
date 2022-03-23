@@ -121,8 +121,8 @@ void minuitFunction(int& nDim, double* gout, double& result, double par[], int f
 void fitNorm()
 {
   const int n_state = 3;
-  const int n_beta = 2;
   string sList[] = {"ups1", "ups2", "ups3"};
+  const int n_beta = 2;
   int bList[] = {2, 3};
   double normFactor[n_beta][n_state];
   int n_plots[n_state];
@@ -248,7 +248,8 @@ void fitNorm()
   fit->SetParameter(n_allS+2, "L_LHCb_7_j", 1., 0.1, 0, 0);
   fit->SetParameter(n_allS+3, "L_LHCb_7", 1., 0.1, 0, 0);
   fit->SetParameter(n_allS+4, "L_LHCb_13", 1., 0.1, 0, 0);
-  fit->FixParameter(n_allS+2);
+  for(int i=n_allS; i < n_allS+5; i++)
+    fit->FixParameter(i);
 
   //for(int inp = 0; inp < 5; inp++) fit->FixParameter(n_state+inp);
 
@@ -293,22 +294,25 @@ void fitNorm()
   tex << "\\begin{table}[h!]" << endl;
   tex << "\\centering" << endl;
   tex << "\\begin{tabular}{c | c || c | c | c}" << endl;
-  tex << "Parameter & Value $(\\times10^3)$ & Parameter & Value & Dev ($\\sigma$) \\\\" << endl;
+  tex << "Parameter & Value & Parameter & Value & Dev ($\\sigma$) \\\\" << endl;
   tex << "\\hline" << endl;
   for(int i_tex = 0; i_tex < 5; i_tex++) {
     if(i_tex < n_allS) {
       if (fit->GetParError(i_tex) > 0) {
-	int p_norm = ceil(-log10(fit->GetParError(i_tex)/1000.))+1;
-	tex << "$N_{" << stateTex[i_tex] << "}$ & $" << setprecision(p_norm) << fixed << pars[i_tex]/1000. << "\\pm" << fit->GetParError(i_tex)/1000. << "$ &";
+	int p_norm = ceil(-log10(fit->GetParError(i_tex)))+1;
+	tex << "$N_{" << stateTex[i_tex] << "}$ & $" << setprecision(p_norm) << fixed << pars[i_tex] << "\\pm" << fit->GetParError(i_tex) << "$ &";
       }
       else {
-	tex << "$N_{" << stateTex[i_tex] << "}$ & $" << setprecision(1) << fixed << pars[i_tex]/1000.  << "$ &";
+	tex << "$N_{" << stateTex[i_tex] << "}$ & $" << setprecision(1) << fixed << pars[i_tex]  << "$ &";
       }
-      int p_NP = ceil(-log10(fit->GetParError(n_allS+i_tex)))+1;
-
+      int p_NP = 0;
+      if(fit->GetParError(n_allS+i_tex)!=0)
+	ceil(-log10(fit->GetParError(n_allS+i_tex)))+1;
+      
       float sig_dev = (pars[i_tex+n_allS]-1.)/lumi_unc[i_tex];
       int p_sig = 1;
-      if(abs(sig_dev) < 1) p_sig = ceil(-log10(abs(sig_dev)))+1;
+      if(abs(sig_dev) < 1 && abs(sig_dev) > 0)
+	p_sig = ceil(-log10(abs(sig_dev)))+1;
     
       tex << " $L_{" << NPTex[i_tex] << "}$ & $" << setprecision(p_NP) << fixed << pars[i_tex+n_allS] << "\\pm" << fit->GetParError(n_allS+i_tex) << "$ & " << setprecision(p_sig) << fixed << sig_dev << " \\\\" << endl;
     }
